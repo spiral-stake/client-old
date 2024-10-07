@@ -7,11 +7,11 @@ const ComingSoon = () => {
       <div className="glitch-text">
         <h1>SPIRAL STAKE</h1>
       </div>
-      <p className="description">
-        Get ready to
-        <br /> Unlock interest-free liquidity with your Yield Bearing Tokens
-      </p>
+      <p className="description">Unlock interest-free liquidity with your Yield Bearing Tokens</p>
       <div className="neon-border"></div>
+      <footer className="footer">
+        <p>&copy; {new Date().getFullYear()} spiralstake.xyz. All rights reserved.</p>
+      </footer>
     </div>
   );
 };

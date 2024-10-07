@@ -19,10 +19,11 @@ body {
   text-align: center;
   position: relative;
   z-index: 1;
+  padding: 20px; /* Added padding for mobile */
 }
 
 .glitch-text {
-  font-size: 5rem;
+  font-size: 5rem; /* Default size for larger screens */
   font-weight: bold;
   color: #f0f0f0;
   position: relative;
@@ -59,17 +60,38 @@ body {
 
 .description {
   margin-top: 20px;
-  font-size: 1.2rem;
+  font-size: 1.5rem; /* Slightly larger for better readability */
   color: #9b9b9b;
 }
 
+.skull {
+  width: 80px; /* Reduced size for mobile */
+  height: 80px; /* Reduced size for mobile */
+  margin: 30px auto;
+  background-image: url('https://i.imgur.com/EVJwhU8.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
 .neon-border {
-  width: 80%;
+  width: 90%; /* Made it responsive */
   height: 10px;
   background: linear-gradient(90deg, rgba(0, 87, 155, 0.8), rgba(0, 240, 255, 0.8));
   margin: 40px auto;
   border-radius: 5px;
   animation: neon-blink 2s infinite alternate;
+}
+
+.footer {
+  margin-top: 20px;
+  font-size: 1rem;
+  color: #9b9b9b;
+  position: relative;
+  z-index: 1;
+}
+
+.footer p {
+  margin: 0;
 }
 
 /* Glitch Animations */
@@ -137,4 +159,43 @@ body {
 @keyframes neon-blink {
   0% { box-shadow: 0 0 20px rgba(0, 87, 155, 0.8); }
   100% { box-shadow: 0 0 40px rgba(0, 240, 255, 0.8); }
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .glitch-text {
+    font-size: 4rem; /* Adjust size for mobile */
+  }
+  
+  .description {
+    font-size: 1.2rem; /* Adjust size for mobile */
+  }
+
+  .skull {
+    width: 60px; /* Further reduced size for mobile */
+    height: 60px; /* Further reduced size for mobile */
+  }
+
+  .neon-border {
+    width: 90%; /* Ensure it stays responsive */
+  }
+}
+
+@media (max-width: 480px) {
+  .glitch-text {
+    font-size: 2.8rem; /* Even smaller for very small screens */
+  }
+
+  .description {
+    font-size: 1rem; /* Smaller size for better fit */
+  }
+
+  .skull {
+    width: 50px; /* Smallest size for mobile */
+    height: 50px; /* Smallest size for mobile */
+  }
+
+  .footer{
+    font-size: 0.7rem;
+  }
 }
