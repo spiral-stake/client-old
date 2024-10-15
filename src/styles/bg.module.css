@@ -1,0 +1,184 @@
+.blurNft{
+    height: 100vh;
+    width: 100vw;
+    position: absolute;
+    z-index: 1;
+    background-color: rgba(0, 0, 0, 0.5); /* semi-transparent black */
+    backdrop-filter: blur(3px);
+}
+
+.blurToken{
+    height: 100%;
+    min-height: 100vh;
+    width: 100vw;
+    position: absolute;
+    z-index: 1;
+    background-color: rgba(0, 0, 0, 0.5); /* semi-transparent black */
+    backdrop-filter: blur(6px);
+}
+
+.send{
+    width: 500px;
+    position: absolute;
+    right: 150px;
+}
+
+.nft{
+    position: absolute;
+    right: 100px;
+    top: 10px;
+    transform: rotate(-20deg);
+}
+
+.nft1{
+    width: 100px;
+}
+
+.nft2{
+    width: 500px;
+}
+
+.nft3{
+    width: 400px;
+}
+
+.nft4{
+    width: 800px;
+}
+
+.nft5{
+    width: 250px;
+}
+
+.token {
+    position: absolute;
+}
+
+.zoom {
+    animation: zoom 6s infinite;
+}
+
+.move {
+    animation: move 5s infinite;
+}
+
+.rotate {
+    animation: rotate 4s infinite;
+}
+
+.token1 {
+    width: 100px;
+    right: 100px;
+    top: 500px;
+}
+
+.token2 {
+    width: 80px;
+    right: 60px;
+    top: 60px;
+}
+
+.token3 {
+    width: 200px;
+    right: 400px;
+    top: 100px;
+}
+
+.token4 {
+    width: 80px;
+    right: 700px;
+    top: 20px;
+}
+
+.token5 {
+    width: 90px;
+    right: 700px;
+    top: 650px;
+}
+
+.token6 {
+    width: 60px;
+    right: 900px;
+    top: 70px;
+}
+
+.token7 {
+    width: 150px;
+    right: 250px;
+    top: 700px;
+}
+
+.token8 {
+    width: 80px;
+    right: 200px;
+    top: 300px;
+}
+
+.token9 {
+    width: 50px;
+    right: 400px;
+    top: 600px;
+}
+
+.token10 {
+    width: 50px;
+    right: 100px;
+    top: 700px;
+}
+
+.token11 {
+    width: 80px;
+    right: 1000px;
+    top: 600px;
+}
+
+.token12 {
+    width: 100px;
+    left: 100px;
+    bottom: 100px;
+}
+
+.token13 {
+    width: 80px;
+    left: 100px;
+    top: 100px;
+}
+
+.token14 {
+    width: 60px;
+    left: 50px;
+    top: 400px;
+}
+
+.token15 {
+    width: 120px;
+    left: 400px;
+    top: 400px;
+}
+
+@keyframes zoom {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+}
+
+@keyframes move {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+@keyframes rotate {
+    0%, 100% {
+        transform: rotate(0deg);
+    }
+    50% {
+        transform: rotate(10deg);
+    }
+}

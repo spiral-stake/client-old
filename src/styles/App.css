@@ -1,0 +1,377 @@
+@font-face {
+  font-family: "Satoshi-Medium";
+  src: url("../assets/fonts/Satoshi-Medium.woff2") format("woff2"),
+    url("../assets/fonts/Satoshi-Medium.woff") format("woff");
+  font-weight: 400;
+  font-display: swap;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Satoshi-Black";
+  src: url("../assets/fonts/Satoshi-Black.woff2") format("woff2"),
+    url("../assets/fonts/Satoshi-Black.woff") format("woff");
+  font-weight: 900;
+  font-display: swap;
+  font-style: normal;
+}
+
+:root {
+  --color-dark-grey: #1b1b1b;
+  --color-grey: #454545;
+  --color-green: #1be3c2;
+  --color-green-hover: #14af67;
+
+  --color-primary: #4b17e580;
+  --color-primary-hover: rgb(75, 23, 229, 0.7);
+  --color-secondary: rgb(172, 56, 2);
+  --color-secondary-hover: #bd4703;
+
+
+  --color-bg: black;
+  --color-text: #ffffffe6;
+
+
+  --font-Satoshi-Black: "Satoshi-Black", sans-serif;
+  --font-poppins: "Poppins", sans-serif;
+  --font-satoshi-regular: "Satoshi-Medium", sans-serif;
+
+  --font-size-regular: 16px;
+  --btn-border-radius: 10px;
+  --btn-border-radius-round: 20px;
+}
+
+
+*,
+*::after,
+*::before {
+  box-sizing: border-box;
+}
+
+img {
+  width: 100%;
+}
+
+ul {
+  margin: 0;
+}
+
+body {
+  color: var(--color-text);
+  margin: 0;
+  background: var(--color-bg);
+  font-family: var(--font-satoshi-regular);
+  position: relative;
+}
+
+p {
+  font-size: 16px;
+  line-height: 1.6;
+  margin: 0 0 15px;
+}
+
+a {
+  text-decoration: none !important;
+  transition: ease-in-out 0.3s;
+  display: inline-block;
+}
+
+a:hover,
+a:active,
+a:focus {
+  transition: ease-in-out 0.3s;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: normal;
+  font-family: var(--font-Satoshi-Black);
+  margin: 0;
+  line-height: 1.5;
+  font-weight: 400;
+  margin: 40px 0 20px;
+}
+
+h1 {
+  font-size: 62px;
+}
+
+h2 {
+  font-size: 30px;
+}
+
+h3 {
+  font-size: 26px;
+}
+
+h4 {
+  font-size: 24px;
+}
+
+h5 {
+  font-size: 20px;
+}
+
+/*//////////////////////
+// Input
+//////////////////////*/
+
+label {
+  font-size: var(--font-size-regular);
+}
+
+input::-webkit-inner-spin-button,
+input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input {
+  -moz-appearance: textfield;
+  font-family: var(--font-satoshi-regular);
+}
+
+select {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: var(--font-size-regular);
+  font-family: var(--font-satoshi-regular);
+}
+
+.select-wrapper {
+  background-color: var(--color-dark-grey);
+  padding-right: 10px;
+  border-radius: 10px;
+}
+
+/*//////////////////////
+// Buttons
+//////////////////////*/
+
+.btn {
+  padding: 10px 20px;
+  border-radius: var(--btn-border-radius);
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: var(--font-size-regular);
+  font-family: var(--font-Satoshi-Black);
+  transition: background-color 0.3s ease;
+}
+
+.btn--primary{
+  color: #ffffffe6;
+  background-color: var(--color-primary);
+}
+
+.btn--primary:hover{
+  background-color: var(--color-primary-hover);
+}
+
+.btn--secondary{
+  border: 1px solid var(--color-secondary);
+  color: #ffffffe6;
+  background-color: #000;
+}
+
+.btn--secondary:hover{
+  background-color: var(--color-secondary-hover);
+}
+
+.btn--green{
+  border: 1px solid var(--color-green);
+  color: #ffffffe6;
+  background-color: #000;
+}
+
+.btn--green:hover{
+  background-color: var(--color-green-hover);
+}
+
+.btn:disabled,
+.btn:disabled,
+.btn--disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.btn--small {
+  padding: 5px 10px;
+  font-size: 14px;
+  width: fit-content;
+}
+
+.btn--round{
+  border-radius: var(--btn-border-radius-round);
+}
+
+.btn--main {
+  padding: 0 10px;
+  height: 60px;
+  border-radius: var(--btn-border-radius);
+  color: #ffffffe6;
+  background-color: var(--color-primary);
+  display: flex;
+}
+
+.btn--main:hover {
+  background-color: var(--color-primary-hover);
+}
+
+.btn--connect {
+  font-size: 16px;
+  background-color: var(--color-primary); /* Green color, you can change this */
+  color: #ffffffe6; /* White text, you can change this */
+  border-radius: 5px;
+}
+
+.btn--connect:hover {
+  background-color: var(--color-primary-hover); /* Darker green color on hover, you can change this */
+}
+
+@media screen and (max-width: 600px) {
+  .btn--connect{
+    padding: 5px;
+  }
+}
+
+/*//////////////////////
+// Icons
+//////////////////////*/
+
+.circle{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--color-grey);
+  width: 50px;
+  height: 50px;
+  clip-path: circle(50% at 50% 50%);
+  margin: 10px;
+  cursor: pointer;
+}
+
+.icon {
+  width: 25px;
+}
+
+
+/*//////////////////////
+// Modal
+//////////////////////*/
+
+.modal__input {
+  width: 100%;
+}
+
+.modal__error {
+  color: red;
+  font-weight: 700;
+}
+
+/*//////////////////////
+// App
+//////////////////////*/
+
+.app{
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/*//////////////////////
+// Navbar
+//////////////////////*/
+
+.navbar {
+  width: 100%;
+  position: absolute;
+  display: flex;
+  top: 0;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  font-weight: 700;
+  z-index: 1;
+}
+
+.navbar__links{
+  background-color: var(--color-dark-grey);
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2px;
+}
+
+.navbar__link{
+  cursor: pointer;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  font-size: var(--font-size-regular);
+  font-family: var(--font-satoshi-regular);
+  background-color: #000;
+  color: #ffffffe6;
+  word-wrap: none;
+}
+
+.navbar__balance{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: var(--font-Satoshi-Black);
+  padding: 0 5px;
+  text-align: center;
+}
+
+.navbar__link--selected{
+  cursor: pointer;
+  background-color: var(--color-primary);
+  /* color: #ffffffe6; */
+}
+
+.navbar a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Section */
+.main {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 150px;
+}
+
+
+@media screen and (max-width: 600px) {
+  .section {
+    justify-content: center;
+  }
+
+  .navbar{
+    flex-direction: column;
+    row-gap: 10px;
+  }
+
+  .navbar__link{
+    font-size: 18px;
+  }
+
+  .btn--connect{
+    font-size: 20px;
+    padding: 5px 20px;
+  }
+}
+

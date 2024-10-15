@@ -1,0 +1,50 @@
+.overlay{
+    height: 100vh;
+    width: 100vw;
+    position: absolute;
+    z-index: 3;
+    background-color: rgba(0, 0, 0, 0.5); /* semi-transparent black */
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.popup{
+    width: 30%;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(27, 27, 27);
+    padding: 40px 25px;
+    position: relative;
+}
+
+.image{
+    max-width: 150px;
+    margin: 10px 0 20px;
+}
+
+.iconSmall {
+    margin: 5px;
+    width: 30px;
+    margin-bottom: 10px;
+}
+
+.close {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    cursor: pointer;
+}
+
+@media screen and (max-width: 600px) {
+    .popup{
+        width: 80%;
+    }
+}
+
+
+
