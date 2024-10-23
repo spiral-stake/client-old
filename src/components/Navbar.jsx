@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import ConnectWalletBtn from "./ConnectWalletBtn";
+import spiralStakeLogo from "../assets/images/spiral-stake-logo.png";
 
 const Navbar = ({}) => {
   const location = useLocation();
@@ -8,6 +9,12 @@ const Navbar = ({}) => {
 
   return (
     <nav className="navbar">
+      <Link to="/pools">
+        <div className="logo">
+          <img className="logo__img" src={spiralStakeLogo} alt="" />
+          <span className="logo__text">Spiral Stake</span>
+        </div>
+      </Link>
       <div className="navbar__links">
         {/* <Link to="/">
           <button className={`navbar__link ${pathname === "/" && "navbar__link--selected"}`}>
@@ -29,12 +36,27 @@ const Navbar = ({}) => {
               pathname.endsWith("/pools/create") ? "navbar__link--selected" : ""
             }`}
           >
-            Create a Pool
+            Create Pool
           </button>
         </Link>
-        <a target="blank" href="">
-          <button className={`navbar__link`}>Follow On Twitter</button>
-        </a>
+        <Link to="/marketplace">
+          <button
+            className={`navbar__link ${
+              pathname.includes("/marketplace") ? "navbar__link--selected" : ""
+            }`}
+          >
+            MarketPlace
+          </button>
+        </Link>
+        <Link to="/dashboard">
+          <button
+            className={`navbar__link ${
+              pathname.includes("/dashboard") ? "navbar__link--selected" : ""
+            }`}
+          >
+            Dashboard
+          </button>
+        </Link>
       </div>
       <div className="navbar__links">
         <ConnectWalletBtn className="btn btn--connect" />

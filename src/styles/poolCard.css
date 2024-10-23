@@ -1,0 +1,152 @@
+.card_ {
+  padding: 15px;
+  background: linear-gradient(120deg, var(--color-bg), var(--color-primary-dark));
+  border-radius: 10px;
+  margin-bottom: 23px;
+  overflow: hidden; /* Prevent overflow */
+  border: 2px solid transparent; /* Gradient border */
+  background-clip: padding-box; /* Clip background to padding */
+  position: relative; /* For pseudo-element */
+  transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease; /* Added smooth transition for multiple properties */
+}
+
+.card_Title {
+  display: flex;
+  justify-content: space-between;
+}
+
+.cryLogo {
+  display: flex;
+  align-items: center;
+  height: 50px; /* Set a fixed height for the logo container */
+}
+
+.cryLogo img {
+  width: 50px; /* Fixed width for the logo */
+  height: 50px; /* Fixed height for the logo */
+  object-fit: contain; /* Maintain aspect ratio */
+  border-radius: 100px; /* Keep the logo circular */
+}
+
+.card_Title .title {
+  font-size: 18px;
+  margin-bottom: 0;
+}
+
+.cryLogo h3 {
+  font-size: 18px;
+  color: var(--color-text); /* White text */
+}
+
+.cryLogo h3 span {
+  color: var(--color-yellow); /* Yellow for token symbol */
+}
+
+.cryLogo h4 {
+  font-size: 14px;
+}
+
+.cryLogo > div {
+  padding-left: 10px;
+}
+
+.card_body {
+  margin: 15px 0px;
+}
+
+.card_body ul {
+  display: flex;
+  padding: 15px 10px;
+  margin-bottom: 0;
+}
+
+.card_body ul li {
+  width: 25%;
+  list-style-type: none;
+}
+
+.card_body ul li h3 {
+  font-size: 18px;
+}
+
+.card_body small {
+  font-size: 12px;
+  line-height: 30px;
+}
+
+.card_footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card_footer h3 {
+  font-size: 12px;
+}
+
+.card_footer h3 span {
+  font-size: 18px;
+  letter-spacing: 5px;
+  color: var(--color-yellow); /* Yellow for highlights */
+}
+
+a.btn_view {
+  font-size: 12px;
+  padding: 7px 12px;
+  border-radius: 10px;
+  text-decoration: none;
+  letter-spacing: 1px;
+}
+
+.card_Title button.btnYellow {
+  font-weight: 700;
+  height: 31px;
+  border-radius: 10px;
+  border: none;
+  min-width: 98px;
+  color: #fff;
+  background: linear-gradient(90deg, #f1bb13, #f2d891);
+}
+
+.card_Title button.tag {
+  height: 31px;
+  border-radius: 10px;
+  padding: 0 10px;
+  min-width: 0;
+}
+
+.card_Title button.tag--blue {
+  background: linear-gradient(90deg, #8198ee, #c1ccf7); /* Keep this as is since it's a gradient */
+}
+
+.card_Title button.tag--yellow {
+  background: linear-gradient(90deg, #f1bb13, #f2d891); /* Keep this as is since it's a gradient */
+}
+
+.card_:hover {
+  transform: scale(1.02);
+  /* box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);  */
+}
+
+@media screen and (max-width: 600px) {
+  .card_body ul {
+    flex-wrap: wrap;
+    row-gap: 15px;
+  }
+
+  .card_body ul li {
+    width: 50%;
+  }
+}
+
+/* .card_:hover::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 10px;
+  background: linear-gradient(135deg, rgba(255, 0, 128, 0.5), rgba(255, 140, 0, 0.5));
+  z-index: -1;
+} */

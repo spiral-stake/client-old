@@ -51,6 +51,7 @@ export class Base {
   }
 
   parseUnits(value, decimals = 18) {
+    value = value !== "string" ? value.toString() : value;
     return parseUnits(value, decimals);
   }
 }

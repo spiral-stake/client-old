@@ -1,5 +1,5 @@
 import ERC20 from "./ERC20"; // Importing the ERC20 class
-import { abi as ABI_SY } from "../../../contracts/out/SYBase.sol/SYBase.json";
+import { abi as ABI_SY } from "../../../v1-core/out/SYBase.sol/SYBase.json";
 
 export default class SY extends ERC20 {
   constructor(address) {
@@ -9,11 +9,15 @@ export default class SY extends ERC20 {
   static async createInstance(address) {
     const instance = new SY(address);
 
-    const { name, symbol, decimals } = await ERC20.createInstance(address);
+    const [{ name, symbol, decimals }, ybt] = await Promise.all([
+      ERC20.createInstance(address),
+      instance.read("yieldToken"),
+    ]);
 
     instance.name = name;
     instance.symbol = symbol;
     instance.decimals = decimals;
+    instance.ybt = ybt;
 
     return instance;
   }
@@ -21,10 +25,6 @@ export default class SY extends ERC20 {
   ///////////////////////////
   // SPECIFIC SY FUNCTIONS
   /////////////////////////
-
-  async getYbt() {
-    return this.read("yieldToken");
-  }
 
   async getYbtUnderlying() {
     const assetInfo = await this.read("assetInfo");

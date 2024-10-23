@@ -47,30 +47,20 @@ const tokens = [
   { src: token15, classNames: "token15 move" },
 ];
 
-const Background = ({ assetStandard }) => {
+const Background = () => {
   return (
     <>
-      <div className={assetStandard === "TOKEN" ? bg.blurToken : bg.blurNft}></div>
-      {assetStandard === "TOKEN"
-        ? tokens.map((token, index) => (
-            <img
-              key={index}
-              className={`${bg.token} ${bg[token.classNames.split(" ")[0]]} ${
-                bg[token.classNames.split(" ")[1]]
-              }`}
-              src={token.src}
-              alt={token.alt}
-            />
-          ))
-        : nfts.map((nft, index) => (
-            <img
-              key={index}
-              className={`${bg.nft} ${bg[nft.className]}`}
-              src={nft.src}
-              alt={nft.alt}
-            />
-          ))}
-      ;
+      <div className={bg.blurToken}></div>
+      {tokens.map((token, index) => (
+        <img
+          key={index}
+          className={`${bg.token} ${bg[token.classNames.split(" ")[0]]} ${
+            bg[token.classNames.split(" ")[1]]
+          }`}
+          src={token.src}
+          alt={token.alt}
+        />
+      ))}
     </>
   );
 };

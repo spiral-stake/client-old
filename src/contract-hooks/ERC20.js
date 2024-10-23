@@ -1,25 +1,13 @@
 import { Base } from "./Base";
-import { abi as TOKEN_ABI } from "../../../contracts/out/ERC20.sol/ERC20.json";
+import { abi as TOKEN_ABI } from "../../../v1-core/out/ERC20.sol/ERC20.json";
 
 export default class ERC20 extends Base {
-  constructor(address, ...extendedAbis) {
+  constructor(address, name, symbol, decimals, ...extendedAbis) {
     super(address, [...TOKEN_ABI, ...extendedAbis]);
-  }
 
-  static async createInstance(address) {
-    const instance = new ERC20(address);
-
-    const [name, symbol, decimals] = await Promise.all([
-      instance.read("name"),
-      instance.read("symbol"),
-      instance.read("decimals"),
-    ]);
-
-    instance.name = name;
-    instance.symbol = symbol;
-    instance.decimals = decimals;
-
-    return instance;
+    this.name = name;
+    this.symbol = symbol;
+    this.decimals = decimals;
   }
 
   ///////////////////////////

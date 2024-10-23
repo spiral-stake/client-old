@@ -1,0 +1,42 @@
+/* Token Inputs */
+
+.token-input__container {
+  width: 100%;
+}
+
+.token-input {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border: 2px solid var(--color-primary-light);
+  border-radius: var(--btn-border-radius);
+}
+
+.token-input .token {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+}
+
+.token-input .token select {
+  background: inherit;
+  font-size: 18px;
+}
+
+.token-input .input {
+  padding: 10px;
+  border-left: 2px solid var(--color-primary-light) !important;
+  border-top-right-radius: var(--btn-border-radius);
+  border-bottom-right-radius: var(--btn-border-radius);
+}
+
+.token-input .input input {
+  background: inherit;
+  font-size: 18px;
+}
+
+.token-input__error {
+  color: rgb(221 84 83);
+  width: 100%;
+  position: relative;
+  left: 5px;
+}

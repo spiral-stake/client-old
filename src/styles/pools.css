@@ -1,0 +1,42 @@
+.pools {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: start;
+  row-gap: 20px;
+}
+
+.pools__select-box {
+  display: flex;
+  column-gap: 4px;
+}
+
+.pools__select-box .btn {
+  font-size: 14px;
+  padding: 7px 28px;
+  border-radius: var(--btn-border-radius);
+  background: var(--gradient-2);
+  color: #fff;
+}
+
+.pools__select-box .btn--selected {
+  color: #fff;
+  background: var(--gradient-1);
+  /* border: 2px solid var(--color-primary); */
+}
+
+.pools__list {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 50px;
+}
+
+@media screen and (max-width: 800px) {
+  .pools__list {
+    gap: 10px;
+  }
+  .pools__list {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
