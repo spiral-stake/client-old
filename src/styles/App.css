@@ -21,12 +21,13 @@
   --color-primary-light: #b1c2ff; /* Bold orange for hover */
   --color-primary-dark: rgb(103, 136, 255, 0.25);
 
-  --color-secondary-dard: #dba501;
+  --color-secondary-dark: #dba501;
   --color-secondary: #f1bb13;
   --color-secondary-light: #f2d891;
 
   --color-dark-grey: rgb(27, 27, 27);
   --color-text: #333333; /* Softer off-white text for better readability */
+  --color-text-light: #515151;
   --color-text-dark: #9b9b9b; /* Softer off-white text for better readability */
   --color-bg: #6788ff1a; /* Slightly lighter dark background for the app */
 
@@ -200,6 +201,26 @@ button {
   color: #ffffff; /* Adjusted text color on hover */
 }
 
+.btn--secondary {
+  color: #fff;
+  background: linear-gradient(
+    90deg,
+    var(--color-secondary-dark),
+    var(--color-secondary-light)
+  ); /* Gradient */
+  transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease; /* Added smooth transition for multiple properties */
+}
+
+.btn--secondary:hover {
+  background: linear-gradient(
+    45deg,
+    var(--color-secondary-dark),
+    var(--color-secondary)
+  ); /* Gradient */
+  transform: scale(1.02);
+  color: #ffffff; /* Adjusted text color on hover */
+}
+
 .btn--connect {
   font-size: 18px;
   background: linear-gradient(
@@ -226,6 +247,27 @@ button {
   .btn--connect {
     padding: 5px;
   }
+}
+
+/*//////////////////////
+// Tags
+//////////////////////*/
+
+.tag {
+  font-family: var(--font-satoshi-bold);
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: none;
+  min-width: 98px;
+  color: #fff;
+  background: linear-gradient(
+    90deg,
+    var(--color-secondary-dark),
+    var(--color-secondary-light),
+    var(--color-secondary-dark)
+  );
 }
 
 /*//////////////////////
@@ -288,7 +330,7 @@ button {
 
 .navbar .logo__text {
   font-family: var(--font-satoshi-bold);
-  font-size: 21px;
+  font-size: 25px;
   color: var(--color-primary);
 }
 
@@ -344,32 +386,6 @@ button {
   min-height: 100vh;
 }
 
-.spiral-container {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  border-radius: 50%;
-}
-
-.spoke {
-  position: absolute;
-  width: 4px;
-  background-color: var(--color-bg);
-  transform-origin: left center;
-}
-
-/* Floating boxes styles */
-.floating-box {
-  width: 50px;
-  height: 50px;
-  background-color: var(--color-primary-light); /* Semi-transparent red */
-  position: absolute;
-  transform-origin: center;
-  border-radius: 8px; /* Optional: Rounded corners */
-}
-
 @media screen and (max-width: 600px) {
   .navbar {
     flex-direction: column;
@@ -381,14 +397,14 @@ button {
   }
 
   .main {
-    padding: 150px 20px;
+    padding: 200px 20px;
   }
 
-  .spiral-container {
-    width: 10px;
+  .navbar .logo__text {
+    font-size: 21px;
   }
 
-  .spoke {
-    height: 300px;
+  .navbar .logo__img {
+    width: 50px;
   }
 }

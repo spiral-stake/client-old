@@ -5,10 +5,10 @@ export const readUnderlyingTokens = () => {
   const underlyingTokens = [];
 
   for (let underlyingObj of Object.values(underlyingTokensObj)) {
-    underlyingTokens.push({
+    underlyingTokens.unshift({
       address: underlyingObj.address,
       name: underlyingObj.name,
-      symbol: underlyingObj.symbol,
+      symbol: underlyingObj.symbol === "wETH" ? "ETH" : underlyingObj.symbol,
       decimals: underlyingObj.decimals,
     });
   }
@@ -17,6 +17,8 @@ export const readUnderlyingTokens = () => {
 };
 
 export const readUnderlyingToken = (underlyingTokenSymbol) => {
+  if (underlyingTokenSymbol === "ETH") underlyingTokenSymbol = "wETH";
+
   const underlyingObj = underlyingTokensObj[underlyingTokenSymbol];
 
   const ybts = [];
@@ -27,7 +29,7 @@ export const readUnderlyingToken = (underlyingTokenSymbol) => {
   return {
     address: underlyingObj.address,
     name: underlyingObj.name,
-    symbol: underlyingObj.symbol,
+    symbol: underlyingObj.symbol === "wETH" ? "ETH" : underlyingObj.symbol,
     decimals: underlyingObj.decimals,
     ybts,
   };

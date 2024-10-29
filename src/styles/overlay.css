@@ -1,0 +1,34 @@
+.overlay {
+  position: fixed; /* Ensures the overlay stays fixed to the viewport */
+  top: 0;
+  left: 0;
+  height: 100%; /* Cover full page height regardless of content length */
+  width: 100%; /* Cover full page width */
+  z-index: 3; /* Ensure it's above other content */
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+  backdrop-filter: blur(5px); /* Adds a blur effect to the background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.image {
+  max-width: 150px;
+  margin: 10px 0 20px;
+}
+
+.close-icon {
+  margin: 5px;
+  width: 30px;
+  margin-bottom: 10px;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 600px) {
+  .popup {
+    width: 80%;
+  }
+}

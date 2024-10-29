@@ -1,8 +1,11 @@
 .pool {
   width: 100%;
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  column-gap: 40px;
+  grid-template-columns: 1.5fr 1fr;
+  column-gap: 50px;
+  row-gap: 50px;
+  /* display: flex;
+  justify-content: space-between; */
 }
 
 .pool__interface {
@@ -10,7 +13,6 @@
   max-width: 500px;
   padding: 20px 15px;
   padding-top: 25px;
-  margin-bottom: 2.5px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -55,13 +57,14 @@
 
 @media screen and (max-width: 600px) {
   .pool__interface {
-    margin: 20px;
-    width: 90%;
     left: 0;
   }
 
   .pool {
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    row-gap: 70px;
   }
 
   .pool__interface-box {
@@ -84,4 +87,35 @@
     text-align: center;
     /* border-bottom: 2px solid var(--color-primary-light); */
   }
+}
+
+/* Container for pool info */
+.pool__info {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* Changed 'left' to 'flex-start' for better compatibility */
+  width: 100%;
+  background: var(--gradient-3);
+  border-radius: var(--btn-border-radius);
+  padding: 15px; /* Slightly increased padding for a more spacious look */
+  font-family: var(--font-satoshi-bold);
+  height: max-content;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  gap: 10px; /* Added gap between child elements */
+}
+
+/* Styling for paragraphs within the pool info */
+.pool__info p {
+  margin: 8px 0; /* Adjusted margin for a cleaner layout */
+  display: flex;
+  justify-content: space-between;
+  color: var(--color-text-light);
+  font-size: 0.95rem; /* Slightly smaller font size for better readability */
+  line-height: 1.5; /* Improved line-height for text spacing */
+}
+
+/* Style for span elements within the pool info */
+.pool__info span {
+  color: var(--color-text);
+  font-weight: 600; /* Slightly bolder weight for emphasis */
 }

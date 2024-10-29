@@ -16,7 +16,7 @@ export default class PoolFactory extends Base {
   /////////////////////////
 
   async depositCollateral(collateralTokenAddress, syAddress, amountCollateral) {
-    return this.write("depositCollateral", [
+    return await this.write("depositCollateral", [
       this.poolAddress,
       syAddress,
       collateralTokenAddress,

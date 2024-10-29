@@ -40,7 +40,7 @@ const Pools = () => {
 
       <div className="pools__list">
         {poolAddresses.map((poolAddress, index) => (
-          <PoolCard key={index} poolAddress={poolAddress} cycleDepositToken={underlyingToken} />
+          <PoolCard key={index} poolAddress={poolAddress} baseToken={underlyingToken} />
         ))}
       </div>
     </div>

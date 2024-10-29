@@ -36,7 +36,7 @@ const Navbar = ({}) => {
               pathname.endsWith("/pools/create") ? "navbar__link--selected" : ""
             }`}
           >
-            Create Pool
+            Create
           </button>
         </Link>
         <Link to="/marketplace">

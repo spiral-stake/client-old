@@ -7,7 +7,7 @@ import Navbar from "./components/Navbar";
 import CreatePool from "./pages/CreatePool.jsx";
 import "./styles/App.css";
 import Marketplace from "./pages/Marketplace.jsx";
-import Experiment from "./pages/Experiment.jsx";
+import Experiment from "./components/pools/Spiral.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 
 function App() {

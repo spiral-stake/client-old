@@ -3,6 +3,7 @@ import { abi as POOL_FACTORY_ABI } from "../../../v1-core/out/SpiralPoolFactory.
 import addresses from "../../../v1-core/addresses/31337.json";
 
 const poolFactoryAddress = addresses.spiralPoolFactory;
+const underlyingTokensObj = addresses.underlying;
 
 export default class PoolFactory extends Base {
   constructor() {

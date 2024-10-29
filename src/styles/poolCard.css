@@ -2,7 +2,6 @@
   padding: 15px;
   background: linear-gradient(120deg, var(--color-bg), var(--color-primary-dark));
   border-radius: 10px;
-  margin-bottom: 23px;
   overflow: hidden; /* Prevent overflow */
   border: 2px solid transparent; /* Gradient border */
   background-clip: padding-box; /* Clip background to padding */
@@ -90,7 +89,7 @@
   color: var(--color-yellow); /* Yellow for highlights */
 }
 
-a.btn_view {
+a.btn--view {
   font-size: 12px;
   padding: 7px 12px;
   border-radius: 10px;
@@ -105,7 +104,7 @@ a.btn_view {
   border: none;
   min-width: 98px;
   color: #fff;
-  background: linear-gradient(90deg, #f1bb13, #f2d891);
+  background: linear-gradient(90deg, var(--color-secondary-dark), var(--color-secondary-light));
 }
 
 .card_Title button.tag {

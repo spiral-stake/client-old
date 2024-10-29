@@ -6,12 +6,14 @@ import token from "../../assets/images/token/token2.png";
 import { Link } from "react-router-dom";
 import arrow from "../../assets/images/Arrow-right-up-Line.svg";
 
-const PoolCard = ({ poolAddress, cycleDepositToken }) => {
+const PoolCard = ({ poolAddress, baseToken }) => {
   const [pool, setPool] = useState();
   const [state, setState] = useState();
   const [currentCycle, setCycle] = useState();
   const [positionsFilled, setPositionsFilled] = useState();
   const [cyclesFinalized, setCyclesFinalized] = useState();
+
+  console.log(baseToken);
 
   useEffect(() => {
     const getPool = async () => {
@@ -48,16 +50,16 @@ const PoolCard = ({ poolAddress, cycleDepositToken }) => {
           <div className="cryLogo">
             <img src={token} />
             <div>
-              <h3>{cycleDepositToken.symbol}</h3>
+              <h3>{baseToken.symbol}</h3>
               <h4 style={{ color: "#dba501" }}>
-                Win = {pool.amountCollateralInAccounting} {cycleDepositToken.symbol}
+                Win = {pool.amountCollateralInAccounting} {baseToken.symbol}
               </h4>
             </div>
           </div>
           <div>
             {currentCycle && (
-              <button disabled={true} className="btnYellow tag tag--yellow">
-                {currentCycle}
+              <button style={{ marginRight: "4px" }} disabled={true} className="btnYellow">
+                Cycle {currentCycle} / {pool.totalCycles}
               </button>
             )}
             <button disabled={true} className="btnYellow">
@@ -79,20 +81,21 @@ const PoolCard = ({ poolAddress, cycleDepositToken }) => {
             <li>
               <small>Cycle Duration</small>
               <h3>
-                {pool.cycleDuration / 60} <small className="mx-1">Mins</small>
+                {pool.cycleDuration / 240}{" "}
+                <small className="mx-1">{pool.cycleDuration / 240 <= 1 ? "Month" : "Months"}</small>
               </h3>
             </li>
             <li>
               <small>YBT Collateral</small>
               <h3>
                 ~ {pool.amountCollateralInAccounting}{" "}
-                <small className="mx-1">{cycleDepositToken.symbol}</small>
+                <small className="mx-1">{baseToken.symbol}</small>
               </h3>
             </li>
             <li>
               <small>Cycle Deposit</small>
               <h3>
-                {pool.amountCycleDeposit} <small className="mx-1">{cycleDepositToken.symbol}</small>{" "}
+                {pool.amountCycle} <small className="mx-1">{baseToken.symbol}</small>{" "}
               </h3>
             </li>
           </ul>
@@ -118,8 +121,8 @@ const PoolCard = ({ poolAddress, cycleDepositToken }) => {
             {true && (
               <img style={{ width: "25px", margin: "0 5px" }} src="/images/key.svg" alt="" />
             )}
-            <Link to={`/pools/${pool.address}?cycleDepositToken=${cycleDepositToken.symbol}`}>
-              <a className="btn btn--primary btn_view">
+            <Link to={`/pools/${pool.address}?baseToken=${baseToken.symbol}`}>
+              <a className="btn btn--primary btn--view">
                 view <img src={arrow} />
               </a>
             </Link>

@@ -1,4 +1,5 @@
 import { createConfig, http } from "wagmi";
+import { waitForTransactionReceipt } from "@wagmi/core";
 import { mainnet, bsc, bscTestnet, sepolia, hardhat } from "wagmi/chains";
 
 export const wagmiConfig = createConfig({

@@ -1,0 +1,106 @@
+.spiral-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  border-radius: 50%;
+}
+
+.spoke {
+  position: absolute;
+  width: 4px;
+  background-color: var(--color-bg);
+  transform-origin: left center;
+}
+
+.floating-box {
+  width: 50px;
+  height: 50px; /* Semi-transparent red */
+  position: absolute;
+  border: 2px solid var(--color-primary-light);
+  background-color: #fff;
+  transform-origin: center;
+  border-radius: 6px; /* Optional: Rounded corners */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  z-index: 0;
+}
+
+.floating-box img {
+  position: absolute;
+  width: 125%;
+}
+
+.floating-box--filled {
+  border: none;
+  cursor: pointer;
+}
+
+.floating-box--winner {
+  font-size: 10px;
+  width: 60px !important;
+  height: 90px !important;
+  position: relative; /* Ensure that the pseudo-element is positioned relative to the box */
+}
+
+.floating-box--winner::before {
+  content: "Cycle Winner";
+  font-size: 14px; /* Adjusted font size to be smaller */
+  color: var(--color-secondary); /* Change text color as needed */
+  position: absolute;
+  top: -35px; /* Position above the box */
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 2px 5px;
+  white-space: nowrap;
+  z-index: 1;
+  font-family: var(--font-satoshi-bold);
+}
+
+.floating-box--beeping {
+  font-size: 10px;
+  width: 100px !important;
+  height: 150px !important;
+  z-index: 2;
+  box-shadow: 0 5px 40px var(--color-primary);
+  border-radius: 10px;
+
+  font-family: var(--font-satoshi-bold);
+  color: #fff;
+  background: linear-gradient(
+    135deg,
+    var(--color-secondary-light),
+    var(--color-primary),
+    var(--color-primary),
+    var(--color-bg)
+  );
+  background-size: 300%; /* Increased to make the transition smoother */
+  background-position: left;
+  border: none;
+  animation: shine 4s linear infinite; /* Shining effect with smoother transition */
+}
+
+/* Keyframes for smooth shine effect */
+@keyframes shine {
+  0% {
+    background-position: 80% 50%; /* Starts at the left */
+  }
+  50% {
+    background-position: 0% 50%; /* Moves to the right */
+  }
+  100% {
+    background-position: 80% 50%; /* Returns to the left */
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .floating-box--beeping {
+    font-size: 10px;
+    width: 60px !important;
+    height: 90px !important;
+    border-radius: 8px;
+  }
+}
