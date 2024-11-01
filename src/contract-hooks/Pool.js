@@ -1,7 +1,7 @@
 import { Base } from "./Base";
 import { abi as POOL_ABI } from "../../../v1-core/out/SpiralPool.sol/SpiralPool.json";
 import { formatUnits } from "../utils/formatUnits";
-import { readUnderlyingToken } from "../config/contractsData";
+import { readBaseToken } from "../config/contractsData";
 import ERC20 from "./ERC20";
 
 export default class Pool extends Base {
@@ -13,7 +13,7 @@ export default class Pool extends Base {
     const instance = new Pool(address);
 
     if (baseTokenSymbol) {
-      const baseTokenData = readUnderlyingToken(baseTokenSymbol);
+      const baseTokenData = readBaseToken(baseTokenSymbol);
       const collateralTokensData = baseTokenData.ybts;
 
       const { address: tokenAddress, name, symbol, decimals } = baseTokenData;
@@ -93,7 +93,7 @@ export default class Pool extends Base {
     ]);
 
     const collateralToken = this.collateralTokens.find(
-      (collateralToken) => collateralToken.syAddress === position.collateralToken
+      (collateralToken) => collateralToken.syAddress === position.syCollateralToken
     );
 
     position.id = positionId;

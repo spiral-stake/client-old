@@ -2,14 +2,14 @@ import { useEffect, useState } from "react";
 import PoolCard from "../components/pools/PoolCard";
 import "../styles/pools.css";
 import { Link } from "react-router-dom";
-import { readUnderlyingTokens } from "../config/contractsData";
+import { readBaseTokens } from "../config/contractsData";
 import PoolFactory from "../contract-hooks/PoolFactory";
 
-const underlyingTokens = readUnderlyingTokens();
+const baseTokens = readBaseTokens();
 const poolFactory = new PoolFactory();
 
 const Pools = () => {
-  const [underlyingToken, setUnderlyingToken] = useState(underlyingTokens[0]);
+  const [underlyingToken, setUnderlyingToken] = useState(baseTokens[0]);
   const [poolAddresses, setPoolAddresses] = useState();
 
   useEffect(() => {
@@ -27,7 +27,7 @@ const Pools = () => {
   return poolAddresses ? (
     <div className="pools">
       <div className="pools__select-box">
-        {underlyingTokens.map((token, index) => (
+        {baseTokens.map((token, index) => (
           <button
             onClick={() => setUnderlyingToken(token)}
             key={index}

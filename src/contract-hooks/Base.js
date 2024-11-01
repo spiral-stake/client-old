@@ -4,6 +4,7 @@ import {
   writeContract,
   simulateContract,
   getAccount,
+  waitForTransactionReceipt,
 } from "wagmi/actions";
 import { formatUnits, parseUnits } from "viem";
 import { wagmiConfig as config } from "../config/wagmiConfig";
@@ -37,13 +38,15 @@ export class Base {
   }
 
   async write(functionName, args = [], value = "0") {
-    return writeContract(config, {
+    const hash = await writeContract(config, {
       abi: this.abi,
       address: this.address,
       functionName,
       args,
       value,
     });
+
+    return waitForTransactionReceipt(config, { hash, confirmations: 1 });
   }
 
   formatUnits(value, decimals = 18) {

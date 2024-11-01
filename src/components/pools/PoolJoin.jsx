@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 import PoolRouter from "../../contract-hooks/PoolRouter";
-import "../../styles/TokenInput.css";
 
 const PoolJoin = ({ pool, allPositions, getAllPositions, setActionBtn }) => {
   const [ybtCollateral, setYbtCollateral] = useState(pool.collateralTokens[0]);
@@ -91,7 +90,7 @@ const PoolJoin = ({ pool, allPositions, getAllPositions, setActionBtn }) => {
   return (
     amountYbtCollateral && (
       <div className="pool__interface-box">
-        <span className="label">Cycle Deposit</span>
+        <span className="label">YBT Collateral</span>
         <span
           style={{
             fontSize: "14px",

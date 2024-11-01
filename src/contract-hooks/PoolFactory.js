@@ -14,19 +14,36 @@ export default class PoolFactory extends Base {
   // WRITE FUNCTIONS
   /////////////////////////
 
+  async createSpiralPool(baseToken, amountCycle, cycleDuration, totalCycles, startInterval) {
+    const cycleDurationInSeconds = cycleDuration * 60;
+    const startIntervalInSeconds = startInterval * 60;
+
+    const receipt = await this.write("createSpiralPool", [
+      baseToken.address,
+      this.parseUnits(amountCycle, baseToken.decimals),
+      cycleDurationInSeconds,
+      totalCycles,
+      startIntervalInSeconds,
+    ]);
+
+    const paddedAddress = receipt.logs[0].topics[1];
+    const newSpiralPoolAddress = "0x" + paddedAddress.slice(26);
+    return newSpiralPoolAddress;
+  }
+
   ///////////////////////////
   // READ FUNCTIONS
   /////////////////////////
 
   async getSyTokensForUnderlying(underlyingTokenAddress) {
-    return this.read("getSYTokensForUnderlying", [underlyingTokenAddress]);
+    return this.read("getValidSYCollateralTokensForBaseToken", [underlyingTokenAddress]);
   }
 
   async getPoolsForUnderlying(underlyingTokenAddress) {
-    return this.read("getSpiralPoolsForUnderlying", [underlyingTokenAddress]);
+    return this.read("getSpiralPoolsForBaseToken", [underlyingTokenAddress]);
   }
 
-  readUnderlyingTokensAndYbts() {
+  readBaseTokensAndYbts() {
     const underlyingTokens = [];
 
     for (let underlyingObj of Object.values(underlyingTokensObj)) {

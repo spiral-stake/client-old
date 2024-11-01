@@ -43,6 +43,8 @@ const PoolPage = () => {
     getPool();
   }, []);
 
+  console.log(allPositions);
+
   useEffect(() => {
     if (state !== "LIVE") return;
 

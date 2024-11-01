@@ -35,7 +35,7 @@ const TokenInput = ({
           <input
             name={name}
             disabled={disabled}
-            value={value.toFixed(6)}
+            value={value && value.toFixed(6)}
             onChange={onChange}
             type="number"
             placeholder={placeholder}

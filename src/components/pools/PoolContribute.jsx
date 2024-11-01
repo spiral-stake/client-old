@@ -6,6 +6,8 @@ const PoolContribute = ({ pool, currentCycle, position, updatePosition, setActio
   const [userBaseTokenAllowance, setUserBaseTokenAllowance] = useState();
   const [isCycleDepositWindowOpen, setIsCycleDepositWindowOpen] = useState();
 
+  console.log(userBaseTokenBalance);
+
   const { address } = useAccount();
 
   useEffect(() => {

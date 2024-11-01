@@ -1,11 +1,11 @@
 import addresses from "../../../v1-core/addresses/31337.json";
 const underlyingTokensObj = addresses.underlying;
 
-export const readUnderlyingTokens = () => {
+export const readBaseTokens = () => {
   const underlyingTokens = [];
 
   for (let underlyingObj of Object.values(underlyingTokensObj)) {
-    underlyingTokens.unshift({
+    underlyingTokens.push({
       address: underlyingObj.address,
       name: underlyingObj.name,
       symbol: underlyingObj.symbol === "wETH" ? "ETH" : underlyingObj.symbol,
@@ -16,7 +16,7 @@ export const readUnderlyingTokens = () => {
   return underlyingTokens;
 };
 
-export const readUnderlyingToken = (underlyingTokenSymbol) => {
+export const readBaseToken = (underlyingTokenSymbol) => {
   if (underlyingTokenSymbol === "ETH") underlyingTokenSymbol = "wETH";
 
   const underlyingObj = underlyingTokensObj[underlyingTokenSymbol];
