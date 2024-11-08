@@ -1,0 +1,46 @@
+.create-pool {
+  padding: 30px;
+  border-radius: var(--btn-border-radius); /* Use the custom variable */
+  background: var(--gradient-3); /* Assuming this is defined somewhere */
+  height: max-content;
+  margin-top: 25px;
+}
+
+/* Label styles */
+
+/* Input and select styles */
+.create-pool .input-box {
+  width: 100%;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: var(--btn-border-radius); /* Ensure consistent border radius */
+  margin-bottom: 15px;
+  font-size: 100px;
+  display: grid;
+  grid-template-columns: 2.5fr 1.5fr;
+  overflow: hidden;
+
+  padding: 10px 20px; /* Horizontal padding */
+}
+
+.input-box input {
+  font-size: 16px;
+}
+
+/* Style for select box inside .input-box */
+.create-pool .input-box select {
+  text-align: center;
+  background: #fff;
+  border: none; /* Optional: remove borders if desired */
+  height: 100%; /* Make select box take full height of input */
+  font-size: 14px;
+  border-radius: var(--btn-border-radius); /* Same as input box */
+}
+
+.create-pool .label {
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+  display: block;
+  margin-bottom: 5px;
+}

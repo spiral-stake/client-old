@@ -11,6 +11,11 @@ const Input = ({
   error,
   additionalInfo,
   disabled,
+  select,
+  selectName,
+  selectOptions,
+  selectOnChange,
+  selectValue,
 }) => {
   const [cursor, setCursor] = useState(null);
   const ref = useRef(null);
@@ -31,21 +36,29 @@ const Input = ({
 
   return (
     <>
-      <label className="lbl" htmlFor={name}>
+      <label className="label" htmlFor={name}>
         {label}
       </label>
-      <input
-        disabled={disabled}
-        type={type || "text"}
-        name={name}
-        placeholder={placeholder || ""}
-        id={name}
-        className="form-control"
-        value={value}
-        onChange={handleChange}
-        autoFocus={autoFocus}
-        ref={ref}
-      />
+      <div className="input-box">
+        <input
+          disabled={disabled}
+          type={type || "text"}
+          name={name}
+          placeholder={placeholder || ""}
+          id={name}
+          value={value}
+          onChange={handleChange}
+          autoFocus={autoFocus}
+          ref={ref}
+        />
+        {select && (
+          <select name={selectName} onChange={selectOnChange} value={selectValue} id="">
+            {selectOptions.map((option) => (
+              <option value={option}>{option}</option>
+            ))}
+          </select>
+        )}
+      </div>
       {error && <div style={{ color: "red" }}>{error}</div>}
       {additionalInfo && <small>{additionalInfo}</small>}
     </>

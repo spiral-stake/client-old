@@ -1,5 +1,9 @@
 const Dashboard = () => {
-  return "User Dashboard - Coming Soon";
+  return (
+    <h2 className="page-heading">
+      User Dashboard <br /> Coming Soon ...
+    </h2>
+  );
 };
 
 export default Dashboard;

@@ -1,12 +1,18 @@
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
+import { handleAsync } from "../../utils/handleAsyncFunction";
 
-const PoolContribute = ({ pool, currentCycle, position, updatePosition, setActionBtn }) => {
+const PoolContribute = ({
+  pool,
+  currentCycle,
+  position,
+  updatePosition,
+  setActionBtn,
+  setLoading,
+}) => {
   const [userBaseTokenBalance, setUserBaseTokenBalance] = useState();
   const [userBaseTokenAllowance, setUserBaseTokenAllowance] = useState();
   const [isCycleDepositWindowOpen, setIsCycleDepositWindowOpen] = useState();
-
-  console.log(userBaseTokenBalance);
 
   const { address } = useAccount();
 
@@ -39,18 +45,28 @@ const PoolContribute = ({ pool, currentCycle, position, updatePosition, setActio
         });
       }
 
+      if (userBaseTokenBalance < pool.amountCycle) {
+        return setActionBtn({
+          text: `Insufficient ${pool.baseToken.symbol} Balance`,
+          disabled: true,
+        });
+      }
+
       if (userBaseTokenAllowance < pool.amountCycle) {
         return setActionBtn({
-          text: `Approve ${pool.amountCycle.toFixed(5)} ${pool.baseToken.symbol}`,
-          disabled: userBaseTokenBalance < pool.amountCycle ? true : false,
-          onClick: () => handleTokenApprove(pool.baseToken, pool.address, pool.amountCycle),
+          text: `Approve and Deposit`,
+          disabled: false,
+          onClick: handleAsync(
+            () => handleApproveAndCycleDeposit(pool.baseToken, pool.address, pool.amountCycle),
+            setLoading
+          ),
         });
       }
 
       return setActionBtn({
         text: `Deposit Cycle Amount`,
         disabled: false,
-        onClick: handleCycleDeposit,
+        onClick: handleAsync(handleCycleDeposit, setLoading),
       });
     };
 
@@ -67,17 +83,20 @@ const PoolContribute = ({ pool, currentCycle, position, updatePosition, setActio
     setUserBaseTokenAllowance(allowance);
   };
 
-  const handleTokenApprove = async (token, to, value) => {
+  const handleApproveAndCycleDeposit = async (token, to, value) => {
     await token.approve(to, value);
-    updateUserBaseTokenAllowance();
+
+    await Promise.all([updateUserBaseTokenAllowance(), handleCycleDeposit()]);
   };
 
   const handleCycleDeposit = async () => {
     await pool.depositCycle(position.id);
 
-    updateUserBaseTokenBalance();
-    updateUserBaseTokenAllowance();
-    updatePosition(position.id);
+    await Promise.all([
+      updateUserBaseTokenBalance(),
+      updateUserBaseTokenAllowance(),
+      updatePosition(position.id),
+    ]);
   };
 
   return (
@@ -87,7 +106,7 @@ const PoolContribute = ({ pool, currentCycle, position, updatePosition, setActio
         <span className="input-box">
           <span className="input">
             {" "}
-            {pool.amountCycle.toFixed(5)} {pool.baseToken.symbol}
+            {pool.amountCycle.toFixed(4)} {pool.baseToken.symbol}
           </span>
         </span>
       </div>

@@ -13,16 +13,17 @@ const Spiral = ({ pool, allPositions: filledPositions, updatePosition, currentCy
   );
 
   useEffect(() => {
-    const _totalPositions = totalPositions;
+    if (filledPositions && filledPositions.length > 0) {
+      const updatedPositions = [...totalPositions];
+      filledPositions.forEach((position, index) => {
+        updatedPositions[index] = position;
+      });
 
-    for (let i = 0; i < filledPositions.length; i++) {
-      _totalPositions[i] = filledPositions[i];
-    }
+      setTotalPositions(updatedPositions);
 
-    setTotalPositions(_totalPositions);
-
-    if (positionNft) {
-      setPositionNft(_totalPositions[positionNft.id]);
+      if (positionNft) {
+        setPositionNft(updatedPositions[positionNft.id]);
+      }
     }
   }, [filledPositions]);
 

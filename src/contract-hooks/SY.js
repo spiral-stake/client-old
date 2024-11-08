@@ -1,5 +1,5 @@
 import ERC20 from "./ERC20"; // Importing the ERC20 class
-import { abi as ABI_SY } from "../../../v1-core/out/SYBase.sol/SYBase.json";
+import { abi as ABI_SY } from "../abi/SYBase.sol/SYBase.json";
 
 export default class SY extends ERC20 {
   constructor(address) {

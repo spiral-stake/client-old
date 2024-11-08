@@ -1,29 +1,27 @@
 import { Base } from "./Base";
-import { abi as POOL_FACTORY_ABI } from "../../../v1-core/out/SpiralPoolFactory.sol/SpiralPoolFactory.json";
-import addresses from "../../../v1-core/addresses/31337.json";
-
-const poolFactoryAddress = addresses.spiralPoolFactory;
-const underlyingTokensObj = addresses.underlying;
+import { abi as POOL_FACTORY_ABI } from "../abi/SpiralPoolFactory.sol/SpiralPoolFactory.json";
 
 export default class PoolFactory extends Base {
-  constructor() {
+  constructor(poolFactoryAddress) {
     super(poolFactoryAddress, POOL_FACTORY_ABI);
+  }
+
+  static async createInstance(chainId) {
+    const { spiralPoolFactory } = await import(`../addresses/${chainId}.json`);
+    return new PoolFactory(spiralPoolFactory);
   }
 
   ///////////////////////////
   // WRITE FUNCTIONS
   /////////////////////////
 
-  async createSpiralPool(baseToken, amountCycle, cycleDuration, totalCycles, startInterval) {
-    const cycleDurationInSeconds = cycleDuration * 60;
-    const startIntervalInSeconds = startInterval * 60;
-
+  async createSpiralPool(baseToken, amountCycle, totalCycles, cycleDuration, startInterval) {
     const receipt = await this.write("createSpiralPool", [
       baseToken.address,
       this.parseUnits(amountCycle, baseToken.decimals),
-      cycleDurationInSeconds,
+      cycleDuration,
       totalCycles,
-      startIntervalInSeconds,
+      startInterval,
     ]);
 
     const paddedAddress = receipt.logs[0].topics[1];
@@ -41,28 +39,5 @@ export default class PoolFactory extends Base {
 
   async getPoolsForUnderlying(underlyingTokenAddress) {
     return this.read("getSpiralPoolsForBaseToken", [underlyingTokenAddress]);
-  }
-
-  readBaseTokensAndYbts() {
-    const underlyingTokens = [];
-
-    for (let underlyingObj of Object.values(underlyingTokensObj)) {
-      if (underlyingObj.symbol === "wETH") underlyingObj.symbol = "ETH";
-
-      const ybts = [];
-      for (let ybtObj of Object.values(underlyingObj.YBTs)) {
-        ybts.push({ ...ybtObj });
-      }
-
-      underlyingTokens.push({
-        address: underlyingObj.address,
-        name: underlyingObj.name,
-        symbol: underlyingObj.symbol,
-        decimals: underlyingObj.decimals,
-        ybts,
-      });
-    }
-
-    return underlyingTokens;
   }
 }

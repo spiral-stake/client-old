@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { displayAmount } from "../../utils/displayAmounts";
+import { handleAsync } from "../../utils/handleAsyncFunction";
 
-const PoolRedeem = ({ pool, state, position, updatePosition, setActionBtn }) => {
+const PoolRedeem = ({ pool, state, position, updatePosition, setActionBtn, setLoading }) => {
   const [amountCollateral, setAmountCollateral] = useState(null);
   const [amountCollateralYield, setAmountCollateralYield] = useState(null);
 
@@ -27,7 +28,7 @@ const PoolRedeem = ({ pool, state, position, updatePosition, setActionBtn }) => 
           setActionBtn({
             text: `Redeem YBT Collateral`,
             disabled: false,
-            onClick: handleRedeemCollateralIfDiscarded,
+            onClick: handleAsync(handleRedeemCollateralIfDiscarded, setLoading),
           });
         }
       } else {
@@ -43,7 +44,7 @@ const PoolRedeem = ({ pool, state, position, updatePosition, setActionBtn }) => 
           setActionBtn({
             text: `Redeem YBT Yield`,
             disabled: false,
-            onClick: handleRedeemYield,
+            onClick: handleAsync(handleRedeemYield, setLoading),
           });
         }
       }
@@ -55,14 +56,14 @@ const PoolRedeem = ({ pool, state, position, updatePosition, setActionBtn }) => 
   // On all Cycles Finalized
   const handleRedeemYield = async () => {
     await pool.redeemCollateralYield(position.id);
-    setAmountCollateralYield(0);
-    updatePosition(position.id);
+
+    await updatePosition(position.id);
   };
 
   const handleRedeemCollateralIfDiscarded = async () => {
     await pool.redeemCollateralIfDiscarded(position.id);
-    setAmountCollateral(0);
-    updatePosition(position.id);
+
+    await updatePosition(position.id);
   };
 
   return position ? (

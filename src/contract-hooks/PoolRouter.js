@@ -1,6 +1,6 @@
 import { Base } from "./Base";
-import { abi as POOL_ROUTER_ABI } from "../../../v1-core/out/SpiralPoolRouter.sol/SpiralPoolRouter.json";
-import addresses from "../../../v1-core/addresses/31337.json";
+import { abi as POOL_ROUTER_ABI } from "../abi/SpiralPoolRouter.sol/SpiralPoolRouter.json";
+import addresses from "../addresses/89346162.json";
 
 const poolRouterAddress = addresses.spiralPoolRouter;
 

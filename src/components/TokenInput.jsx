@@ -1,10 +1,12 @@
 import "../styles/TokenInput.css";
 
 const TokenInput = ({
+  label,
   inputToken,
   inputTokens,
   selectedToken,
-  handleSelectedTokenChange,
+  handleTokenChange,
+  selectName,
   name,
   value,
   altValue,
@@ -15,10 +17,20 @@ const TokenInput = ({
 }) => {
   return (
     <div className="token-input__container">
+      {label && (
+        <label className="label" htmlFor="">
+          {label}
+        </label>
+      )}
       <div className="token-input">
         <div className="token">
           {inputTokens ? (
-            <select value={selectedToken.symbol} onChange={handleSelectedTokenChange} name="" id="">
+            <select
+              value={selectedToken.symbol}
+              onChange={handleTokenChange}
+              name={selectName}
+              id=""
+            >
               {inputTokens.map((token, index) => {
                 return (
                   <option key={index} value={token.symbol}>
@@ -35,13 +47,13 @@ const TokenInput = ({
           <input
             name={name}
             disabled={disabled}
-            value={value && value.toFixed(6)}
+            value={value}
             onChange={onChange}
             type="number"
             placeholder={placeholder}
           />
 
-          <div style={{ fontSize: "12px" }}>~{altValue}</div>
+          {altValue && <div style={{ fontSize: "12px" }}>~{altValue}</div>}
         </div>
       </div>
       <span className="token-input__error">{error ? error : <p></p>}</span>

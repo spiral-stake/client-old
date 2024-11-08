@@ -19,6 +19,7 @@
     "react-countdown": "^2.3.6",
     "react-dom": "^18.3.1",
     "react-hot-toast": "^2.4.1",
+    "react-loading-skeleton": "^3.5.0",
     "react-router-dom": "^6.20.0",
     "react-spinners": "^0.14.1",
     "wagmi": "^2.12.8"

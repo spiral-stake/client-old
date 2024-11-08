@@ -1,5 +1,5 @@
 import { Base } from "./Base";
-import { abi as POOL_ABI } from "../../../v1-core/out/SpiralPool.sol/SpiralPool.json";
+import { abi as POOL_ABI } from "../abi/SpiralPool.sol/SpiralPool.json";
 import { formatUnits } from "../utils/formatUnits";
 import { readBaseToken } from "../config/contractsData";
 import ERC20 from "./ERC20";
@@ -9,11 +9,12 @@ export default class Pool extends Base {
     super(address, POOL_ABI);
   }
 
-  static async createInstance(address, baseTokenSymbol) {
+  static async createInstance(address, chainId, baseTokenSymbol) {
     const instance = new Pool(address);
+    instance.chainId = chainId;
 
     if (baseTokenSymbol) {
-      const baseTokenData = readBaseToken(baseTokenSymbol);
+      const baseTokenData = await readBaseToken(chainId, baseTokenSymbol);
       const collateralTokensData = baseTokenData.ybts;
 
       const { address: tokenAddress, name, symbol, decimals } = baseTokenData;
@@ -32,12 +33,12 @@ export default class Pool extends Base {
       totalCycles,
       startTime,
     ] = await Promise.all([
-      instance.read("getamountCycle"),
-      instance.read("getAmountCollateralInAccounting"), // Need to calc here only
-      instance.read("getCycleDuration"),
-      instance.read("getCycleDepositDuration"),
-      instance.read("getTotalCycles"),
-      instance.read("getStartTime"),
+      instance.read("getamountCycle", [], chainId),
+      instance.read("getAmountCollateralInAccounting", [], chainId),
+      instance.read("getCycleDuration", [], chainId),
+      instance.read("getCycleDepositDuration", [], chainId),
+      instance.read("getTotalCycles", [], chainId),
+      instance.read("getStartTime", [], chainId),
       instance.getPositionsFilled(),
       instance.getCyclesFinalized(),
     ]);
@@ -55,6 +56,10 @@ export default class Pool extends Base {
     return instance;
   }
 
+  async depositYbtCollateral(syCollateralTokenAddress, receiver) {
+    return this.write("depositYbtCollateral", [syCollateralTokenAddress, receiver]);
+  }
+
   async depositCycle(positionId) {
     return this.write("depositCycle", [positionId]);
   }
@@ -68,28 +73,32 @@ export default class Pool extends Base {
   }
 
   async getPositionsFilled() {
-    return parseInt(await this.read("getPositionsFilled"));
+    return parseInt(await this.read("getPositionsFilled", [], this.chainId));
   }
 
   async getCyclesFinalized() {
-    return parseInt(await this.read("getCyclesFinalized"));
+    return parseInt(await this.read("getCyclesFinalized", [], this.chainId));
   }
 
   async getAmountCollateral(collateralToken) {
-    const amountCollateral = await this.read("getAmountCollateral", [collateralToken.syAddress]);
+    const amountCollateral = await this.read(
+      "getAmountCollateral",
+      [collateralToken.syAddress],
+      this.chainId
+    );
     return formatUnits(amountCollateral, collateralToken.decimals);
   }
 
   async getAllPositions() {
-    const positionsData = await this.read("getAllPositions");
+    const positionsData = await this.read("getAllPositions", [], this.chainId);
     const positions = await Promise.all(positionsData.map((_, index) => this.getPosition(index)));
     return positions;
   }
 
   async getPosition(positionId) {
     const [position, owner] = await Promise.all([
-      this.read("getPosition", [positionId]),
-      this.read("ownerOf", [positionId]),
+      this.read("getPosition", [positionId], this.chainId),
+      this.read("ownerOf", [positionId], this.chainId),
     ]);
 
     const collateralToken = this.collateralTokens.find(
@@ -105,9 +114,12 @@ export default class Pool extends Base {
     return position;
   }
 
-  // Need to fix for decimals
   async getCollateralYield(position) {
-    const amountCollateralYield = await this.read("getCollateralYield", [position.id]);
+    const amountCollateralYield = await this.read(
+      "getCollateralYield",
+      [position.id],
+      this.chainId
+    );
     return formatUnits(amountCollateralYield, position.collateralToken.decimals);
   }
 
@@ -141,12 +153,13 @@ export default class Pool extends Base {
   formatCollateralTokens = (collateralTokensData) => {
     const collateralTokens = [];
 
-    for (let tokenData of collateralTokensData) {
+    collateralTokensData.forEach((tokenData, index) => {
       const { address, name, symbol, decimals, syAddress } = tokenData;
       const _collateralToken = new ERC20(address, name, symbol, decimals);
       _collateralToken.syAddress = syAddress;
+      _collateralToken.index = index; // Add index to each token
       collateralTokens.push(_collateralToken);
-    }
+    });
 
     return collateralTokens;
   };

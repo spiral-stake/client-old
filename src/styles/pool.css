@@ -1,11 +1,15 @@
 .pool {
   width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.pool__grid {
+  width: 100%;
   display: grid;
   grid-template-columns: 1.5fr 1fr;
   column-gap: 50px;
   row-gap: 50px;
-  /* display: flex;
-  justify-content: space-between; */
 }
 
 .pool__interface {
@@ -40,7 +44,7 @@
   font-size: 18px;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  border: 2px solid var(--color-primary-light);
+  border: 2px solid var(--color-primary-dark);
   border-radius: var(--btn-border-radius);
 }
 
@@ -52,7 +56,9 @@
 .pool__interface-box .input-box {
   padding: 20px;
   display: flex;
-  border-left: 2px solid var(--color-primary-light);
+  /* border-left: 2px solid var(--color-primary-dark); */
+  background-color: #ffffff;
+  border-radius: var(--btn-border-radius);
 }
 
 @media screen and (max-width: 600px) {
@@ -60,7 +66,7 @@
     left: 0;
   }
 
-  .pool {
+  .pool__grid {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -79,6 +85,7 @@
   .pool__interface-box .input-box {
     border: none;
     padding: 0;
+    background: inherit;
   }
 
   .pool__interface-box .label {
@@ -89,33 +96,46 @@
   }
 }
 
-/* Container for pool info */
 .pool__info {
   display: flex;
   flex-direction: column;
-  justify-content: flex-start; /* Changed 'left' to 'flex-start' for better compatibility */
+  justify-content: center;
   width: 100%;
   background: var(--gradient-3);
-  border-radius: var(--btn-border-radius);
-  padding: 15px; /* Slightly increased padding for a more spacious look */
-  font-family: var(--font-satoshi-bold);
-  height: max-content;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-  gap: 10px; /* Added gap between child elements */
-}
-
-/* Styling for paragraphs within the pool info */
-.pool__info p {
-  margin: 8px 0; /* Adjusted margin for a cleaner layout */
-  display: flex;
-  justify-content: space-between;
-  color: var(--color-text-light);
-  font-size: 0.95rem; /* Slightly smaller font size for better readability */
-  line-height: 1.5; /* Improved line-height for text spacing */
-}
-
-/* Style for span elements within the pool info */
-.pool__info span {
   color: var(--color-text);
-  font-weight: 600; /* Slightly bolder weight for emphasis */
+  border-radius: var(--btn-border-radius);
+  padding: 30px;
+}
+
+.pool__info ul {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Set desired column count here */
+  list-style: none;
+  text-align: left; /* Changed from center to avoid redundancy */
+  margin: 0;
+  padding: 0;
+  margin-left: 10%;
+  column-gap: 10px;
+  row-gap: 25px;
+}
+
+.pool__info ul li {
+  width: 100%;
+  list-style-type: none;
+}
+
+.pool__info ul li h3 {
+  font-size: 18px;
+}
+
+.pool__info small {
+  font-size: 12px;
+  line-height: 30px;
+}
+
+@media screen and (max-width: 600px) {
+  .pool__info ul li h3 {
+    font-size: 16px;
+  }
 }

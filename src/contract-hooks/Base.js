@@ -16,16 +16,21 @@ export class Base {
     this.abi = abi;
   }
 
-  async read(functionName, args = []) {
-    return readContract(config, {
+  async read(functionName, args = [], chainId) {
+    const res = await readContract(config, {
       abi: this.abi,
       address: this.address,
       functionName,
       args,
+      chainId,
     });
+
+    // await this.wait(2);
+
+    return res;
   }
 
-  async simulate(functionName, args = [], value = "0") {
+  async simulate(functionName, args = [], value = "0", chainId) {
     return (
       await simulateContract(config, {
         abi: this.abi,
@@ -33,6 +38,8 @@ export class Base {
         functionName: functionName,
         args,
         account: connector || "0x0000000000000000000000000000000000000000",
+        value,
+        chainId,
       })
     ).result;
   }
@@ -46,6 +53,8 @@ export class Base {
       value,
     });
 
+    // await this.wait(4);
+
     return waitForTransactionReceipt(config, { hash, confirmations: 1 });
   }
 
@@ -56,5 +65,14 @@ export class Base {
   parseUnits(value, decimals = 18) {
     value = value !== "string" ? value.toString() : value;
     return parseUnits(value, decimals);
+  }
+
+  // Need to remove this later (as this only for testing purposes)
+  wait(seconds) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve();
+      }, seconds * 1000);
+    });
   }
 }

@@ -32,11 +32,10 @@
   gap: 20px;
 }
 
-@media screen and (max-width: 800px) {
+@media screen and (max-width: 600px) {
   .pools__list {
-    gap: 10px;
-  }
-  .pools__list {
-    grid-template-columns: repeat(1, 1fr);
+    display: flex;
+    flex-direction: column;
+    row-gap: 20px;
   }
 }

@@ -1,7 +1,6 @@
-import addresses from "../../../v1-core/addresses/31337.json";
-const underlyingTokensObj = addresses.underlying;
+export const readBaseTokens = async (chainId) => {
+  const { underlying: underlyingTokensObj } = await import(`../addresses/${chainId}.json`);
 
-export const readBaseTokens = () => {
   const underlyingTokens = [];
 
   for (let underlyingObj of Object.values(underlyingTokensObj)) {
@@ -16,7 +15,9 @@ export const readBaseTokens = () => {
   return underlyingTokens;
 };
 
-export const readBaseToken = (underlyingTokenSymbol) => {
+export const readBaseToken = async (chainId, underlyingTokenSymbol) => {
+  const { underlying: underlyingTokensObj } = await import(`../addresses/${chainId}.json`);
+
   if (underlyingTokenSymbol === "ETH") underlyingTokenSymbol = "wETH";
 
   const underlyingObj = underlyingTokensObj[underlyingTokenSymbol];

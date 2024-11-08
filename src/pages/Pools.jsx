@@ -1,50 +1,90 @@
 import { useEffect, useState } from "react";
 import PoolCard from "../components/pools/PoolCard";
 import "../styles/pools.css";
-import { Link } from "react-router-dom";
-import { readBaseTokens } from "../config/contractsData";
-import PoolFactory from "../contract-hooks/PoolFactory";
+import { readBaseToken, readBaseTokens } from "../config/contractsData";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+import { useChainId } from "wagmi";
+import ClipLoader from "react-spinners/ClipLoader";
+import Loader from "../components/Loader";
 
-const baseTokens = readBaseTokens();
-const poolFactory = new PoolFactory();
-
-const Pools = () => {
-  const [underlyingToken, setUnderlyingToken] = useState(baseTokens[0]);
+const Pools = ({ baseTokens, poolFactory }) => {
+  const [baseToken, setBaseToken] = useState();
   const [poolAddresses, setPoolAddresses] = useState();
 
-  useEffect(() => {
-    const fetchPoolAddresses = async () => {
-      const [_poolAddresses] = await Promise.all([
-        poolFactory.getPoolsForUnderlying(underlyingToken.address),
-      ]);
+  const navigate = useNavigate();
+  const chainId = useChainId();
+  const baseTokenSymbol = useSearchParams()[0].get("baseToken");
 
+  useEffect(() => {
+    setBaseToken(undefined);
+
+    async function initializeBaseToken() {
+      if (baseTokenSymbol) {
+        const _baseToken = await readBaseToken(chainId, baseTokenSymbol);
+        return setBaseToken(_baseToken);
+      }
+      return setBaseToken(baseTokens[0]);
+    }
+
+    initializeBaseToken();
+  }, [baseTokens]);
+
+  useEffect(() => {
+    if (!baseToken || !poolFactory) return;
+
+    setPoolAddresses(undefined);
+
+    const fetchPoolAddresses = async () => {
+      const _poolAddresses = await poolFactory.getPoolsForUnderlying(baseToken.address);
       setPoolAddresses(_poolAddresses);
     };
 
     fetchPoolAddresses();
-  }, [underlyingToken]);
+  }, [baseToken, poolFactory]);
 
-  return poolAddresses ? (
+  const handleBaseTokenChange = (token) => {
+    setBaseToken(token);
+    const newUrl = `/pools?baseToken=${token.symbol}  `;
+    navigate(newUrl, { replace: true });
+  };
+
+  return (
     <div className="pools">
       <div className="pools__select-box">
         {baseTokens.map((token, index) => (
-          <button
-            onClick={() => setUnderlyingToken(token)}
-            key={index}
-            className={token.address === underlyingToken.address ? "btn btn--selected" : "btn"}
-          >
-            {token.symbol === "wETH" ? "ETH" : token.symbol}
-          </button>
+          <div key={index} style={{ display: "inline-block", marginRight: "8px" }}>
+            {baseToken ? (
+              <button
+                onClick={() => handleBaseTokenChange(token)}
+                className={token.address === baseToken.address ? "btn btn--selected" : "btn"}
+              >
+                {token.symbol === "wETH" ? "ETH" : token.symbol}
+              </button>
+            ) : (
+              <Skeleton
+                baseColor="#b1c2ff"
+                width={100}
+                height={30}
+                style={{ borderRadius: "8px" }}
+              />
+            )}
+          </div>
         ))}
       </div>
 
-      <div className="pools__list">
-        {poolAddresses.map((poolAddress, index) => (
-          <PoolCard key={index} poolAddress={poolAddress} baseToken={underlyingToken} />
-        ))}
-      </div>
+      {poolAddresses ? (
+        <div className="pools__list">
+          {poolAddresses.map((poolAddress, index) => (
+            <PoolCard key={index} poolAddress={poolAddress} baseToken={baseToken} />
+          ))}
+        </div>
+      ) : (
+        <Loader />
+      )}
     </div>
-  ) : null;
+  );
 };
 
 export default Pools;

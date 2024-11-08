@@ -1,5 +1,5 @@
 import { Base } from "./Base";
-import { abi as TOKEN_ABI } from "../../../v1-core/out/ERC20.sol/ERC20.json";
+import { abi as TOKEN_ABI } from "../abi/ERC20.sol/ERC20.json";
 
 export default class ERC20 extends Base {
   constructor(address, name, symbol, decimals, ...extendedAbis) {
@@ -16,6 +16,7 @@ export default class ERC20 extends Base {
 
   async approve(spender, amount) {
     const parsedAmount = this.parseUnits(amount, this.decimals);
+    console.log(parsedAmount);
     return this.write("approve", [spender, parsedAmount]);
   }
 

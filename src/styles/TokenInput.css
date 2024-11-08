@@ -27,6 +27,7 @@
   border-left: 2px solid var(--color-primary-light) !important;
   border-top-right-radius: var(--btn-border-radius);
   border-bottom-right-radius: var(--btn-border-radius);
+  background: #fff;
 }
 
 .token-input .input input {

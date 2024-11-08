@@ -1,8 +1,10 @@
-import { PropagateLoader } from "react-spinners";
+import ClipLoader from "react-spinners/ClipLoader";
 
 const Loader = ({ loading, size, color }) => {
   return (
-    <PropagateLoader cssOverride={{ bottom: "4px" }} loading={loading} size={size} color={color} />
+    <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
+      <ClipLoader color="var(--color-primary)" />
+    </div>
   );
 };
 

@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
-import PoolRouter from "../../contract-hooks/PoolRouter";
+import { handleAsync } from "../../utils/handleAsyncFunction";
+import Skeleton from "react-loading-skeleton";
 
-const PoolJoin = ({ pool, allPositions, getAllPositions, setActionBtn }) => {
+const PoolJoin = ({ pool, allPositions, getAllPositions, setActionBtn, setLoading }) => {
   const [ybtCollateral, setYbtCollateral] = useState(pool.collateralTokens[0]);
   const [amountYbtCollateral, setAmountYbtCollateral] = useState();
   const [userYbtCollateralBalance, setUserYbtCollateralBalance] = useState();
   const [userYbtCollateralAllowance, setUserYbtCollateralAllowance] = useState();
 
   const { address } = useAccount();
-  const poolRouter = new PoolRouter(pool.address);
 
   useEffect(() => {
     getAmountCollateral();
@@ -33,25 +33,34 @@ const PoolJoin = ({ pool, allPositions, getAllPositions, setActionBtn }) => {
         });
       }
 
-      if (userYbtCollateralAllowance < amountYbtCollateral) {
+      if (userYbtCollateralBalance < amountYbtCollateral) {
         return setActionBtn({
-          text: `Approve ${amountYbtCollateral.toFixed(5)} ${ybtCollateral.symbol}`,
-          disabled: userYbtCollateralBalance < amountYbtCollateral ? true : false,
-          onClick: handleApproveYbtCollateral,
+          text: `Insufficient ${ybtCollateral.symbol} Balance`,
+          disabled: true,
+        });
+      }
+
+      if (userYbtCollateralAllowance >= amountYbtCollateral) {
+        return setActionBtn({
+          text: "Join Pool",
+          disabled: false,
+          onClick: handleAsync(handleJoin, setLoading),
         });
       }
 
       return setActionBtn({
-        text: "Join Pool",
-        disabled: false,
-        onClick: handleJoinPool,
+        text: `Approve and Join`,
+        disabled: userYbtCollateralBalance < amountYbtCollateral ? true : false,
+        onClick: handleAsync(handleApproveAndJoin, setLoading),
       });
     };
 
     updatingActionBtn();
-  }, [userYbtCollateralBalance, userYbtCollateralAllowance, allPositions]);
+  }, [userYbtCollateralBalance, userYbtCollateralAllowance, allPositions, ybtCollateral]);
 
   const getAmountCollateral = async () => {
+    setAmountYbtCollateral(undefined);
+
     const _amountCollateral = await pool.getAmountCollateral(ybtCollateral);
     setAmountYbtCollateral(_amountCollateral);
   };
@@ -62,59 +71,61 @@ const PoolJoin = ({ pool, allPositions, getAllPositions, setActionBtn }) => {
   };
 
   const updateUserYbtCollateralAllowance = async () => {
-    const allowance = await ybtCollateral.allowance(address, poolRouter.address);
+    const allowance = await ybtCollateral.allowance(address, pool.address);
     setUserYbtCollateralAllowance(allowance);
   };
 
-  const handleApproveYbtCollateral = async () => {
-    await ybtCollateral.approve(poolRouter.address, amountYbtCollateral);
-    updateUserYbtCollateralAllowance();
-  };
-
   const handleYbtCollateralChange = (e) => {
-    setYbtCollateral(e.target.value);
+    setYbtCollateral(pool.collateralTokens[parseInt(e.target.value)]);
   };
 
-  const handleJoinPool = async () => {
-    await poolRouter.depositCollateral(
-      ybtCollateral.address,
-      ybtCollateral.syAddress,
-      amountYbtCollateral
-    );
-
-    updateUserYbtCollateralBalance();
-    updateUserYbtCollateralAllowance();
-    getAllPositions();
+  const handleApproveAndJoin = async () => {
+    await ybtCollateral.approve(pool.address, amountYbtCollateral);
+    await Promise.all([updateUserYbtCollateralAllowance(), handleJoin()]);
   };
+
+  const handleJoin = async () => {
+    await pool.depositYbtCollateral(ybtCollateral.syAddress, address);
+
+    await Promise.all([
+      updateUserYbtCollateralBalance(),
+      updateUserYbtCollateralAllowance(),
+      getAllPositions(),
+    ]);
+  };
+
+  console.log(ybtCollateral);
 
   return (
-    amountYbtCollateral && (
-      <div className="pool__interface-box">
-        <span className="label">YBT Collateral</span>
-        <span
-          style={{
-            fontSize: "14px",
-            position: "absolute",
-            right: "20px",
-            top: "5px",
-          }}
-        >
-          ~{pool.amountCollateralInAccounting} {pool.baseToken.symbol}
-        </span>
-        <span className="input-box">
-          <span className="input"> {amountYbtCollateral.toFixed(5)}</span>
-          <select value={ybtCollateral.symbol} onChange={handleYbtCollateralChange} name="" id="">
-            {pool.collateralTokens.map((token, index) => {
-              return (
-                <option key={index} value={token.symbol}>
+    <div className="pool__interface-box">
+      <span className="label">YBT Collateral</span>
+      <span
+        style={{
+          fontSize: "14px",
+          position: "absolute",
+          right: "20px",
+          top: "5px",
+        }}
+      >
+        ~{pool.amountCollateralInAccounting} {pool.baseToken.symbol}
+      </span>
+      <span className="input-box">
+        {amountYbtCollateral ? (
+          <>
+            <span className="input">{amountYbtCollateral.toFixed(4)}</span>
+            <select onChange={handleYbtCollateralChange} value={ybtCollateral.index} name="" id="">
+              {pool.collateralTokens.map((token, index) => (
+                <option key={index} value={index}>
                   {token.symbol}
                 </option>
-              );
-            })}
-          </select>
-        </span>
-      </div>
-    )
+              ))}
+            </select>
+          </>
+        ) : (
+          <Skeleton baseColor="var(--color-bg)" width="120px" />
+        )}
+      </span>
+    </div>
   );
 };
 

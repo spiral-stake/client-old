@@ -2,39 +2,52 @@ import { useEffect, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import Pool from "../contract-hooks/Pool.js";
 import "../styles/pool.css";
-import { useAccount } from "wagmi";
+import { useAccount, useChainId, useSwitchChain } from "wagmi";
 import PoolJoin from "../components/pools/PoolJoin.jsx";
 import Spiral from "../components/pools/Spiral.jsx";
 import PoolRedeem from "../components/pools/PoolRedeem.jsx";
 import PoolContribute from "../components/pools/PoolContribute.jsx";
 import ConnectWalletBtn from "../components/ConnectWalletBtn.jsx";
 import PoolInfo from "../components/pools/PoolInfo.jsx";
+import LoadingOverlay from "../components/LoadingOverlay.jsx";
+import { chainConfig } from "../config/chainConfig.js";
+import Loader from "../components/Loader.jsx";
+import Skeleton from "react-loading-skeleton";
 
 const PoolPage = () => {
   const [pool, setPool] = useState();
-  const [state, setState] = useState("");
+  const [state, setState] = useState(undefined);
   const [currentCycle, setCycle] = useState(0);
   const [cyclesFinalized, setCyclesFinalized] = useState(0);
 
   const [allPositions, setAllPositions] = useState();
   const [position, setPosition] = useState();
 
-  const [actionBtn, setActionBtn] = useState({ text: "", onClick: () => {}, disabled: false });
+  const [actionBtn, setActionBtn] = useState({
+    text: "Loading ...",
+    onClick: () => {},
+    disabled: false,
+  });
+  const [loading, setLoading] = useState(false);
 
   const { address } = useAccount();
+  const userChainId = useChainId();
+  const { switchChain } = useSwitchChain();
   const { address: poolAddress } = useParams();
   const baseTokenSymbol = useSearchParams()[0].get("baseToken");
+  const poolChainId = parseInt(useSearchParams()[0].get("chainId"));
 
   useEffect(() => {
     async function getPool() {
-      const _pool = await Pool.createInstance(poolAddress, baseTokenSymbol);
+      const _pool = await Pool.createInstance(poolAddress, poolChainId, baseTokenSymbol);
+
+      setPool(_pool);
 
       const [_allPositions, _cyclesFinalized] = await Promise.all([
         _pool.getAllPositions(),
         _pool.getCyclesFinalized(),
       ]);
 
-      setPool(_pool);
       setState(_pool.calcPoolState(_allPositions.length, cyclesFinalized));
       setCyclesFinalized(_cyclesFinalized);
       setAllPositions(_allPositions);
@@ -42,8 +55,6 @@ const PoolPage = () => {
 
     getPool();
   }, []);
-
-  console.log(allPositions);
 
   useEffect(() => {
     if (state !== "LIVE") return;
@@ -87,6 +98,7 @@ const PoolPage = () => {
           allPositions={allPositions}
           getAllPositions={getAllPositions}
           setActionBtn={setActionBtn}
+          setLoading={setLoading}
         />
       );
     }
@@ -99,6 +111,7 @@ const PoolPage = () => {
           position={position}
           updatePosition={updatePosition}
           setActionBtn={setActionBtn}
+          setLoading={setLoading}
         />
       );
     }
@@ -111,68 +124,92 @@ const PoolPage = () => {
           position={position}
           updatePosition={updatePosition}
           setActionBtn={setActionBtn}
+          setLoading={setLoading}
         />
       );
     }
   };
 
   return pool ? (
-    <div className="pool">
-      <Spiral
-        pool={pool}
-        allPositions={allPositions}
-        updatePosition={updatePosition}
-        currentCycle={currentCycle}
-      />
+    <>
+      <div className="pool">
+        <div className="pool__grid">
+          <Spiral
+            pool={pool}
+            allPositions={allPositions}
+            updatePosition={updatePosition}
+            currentCycle={currentCycle}
+          />
 
-      <div
-        style={{
-          width: "100%",
-          display: "flex",
-          flexDirection: "column",
-          rowGap: "20px",
-          justifyContent: "flex-start",
-        }}
-      >
-        <div disabled={true} className="tag">
-          <span>{state}</span>
-          {state === "LIVE" && (
-            <span>
-              Cycle - {currentCycle}/{pool.totalCycles}{" "}
-            </span>
-          )}
-          {state === "ENDED" && (
-            <span>
-              Cycle's Finalized - {cyclesFinalized}/{pool.totalCycles}{" "}
-            </span>
-          )}
-          {(state === "WAITING" || state === "DISCARDED") && (
-            <span>
-              Filled - {allPositions.length}/{pool.totalPositions}{" "}
-            </span>
-          )}
+          <div
+            style={{
+              width: "100%",
+              display: "flex",
+              flexDirection: "column",
+              rowGap: "20px",
+              justifyContent: "flex-start",
+            }}
+          >
+            <div className="tag">
+              <>
+                {state ? (
+                  <span>{state}</span>
+                ) : (
+                  <Skeleton width={100} baseColor="var(--color-secondary)" />
+                )}
+                {state === "LIVE" && (
+                  <span>
+                    Cycle - {currentCycle}/{pool.totalCycles}{" "}
+                  </span>
+                )}
+                {state === "ENDED" && (
+                  <span>
+                    Cycle's Finalized - {cyclesFinalized}/{pool.totalCycles}{" "}
+                  </span>
+                )}
+                {(state === "WAITING" || state === "DISCARDED") && (
+                  <span>
+                    Filled - {allPositions.length}/{pool.totalPositions}{" "}
+                  </span>
+                )}
+                {state === undefined && <Skeleton width={100} baseColor="var(--color-secondary)" />}
+              </>
+            </div>
+
+            <div className="pool__interface">
+              {/* {position && `Your Position Id: ${position.id}`} */}
+              {renderPoolInterface()}
+              {address ? (
+                userChainId === poolChainId ? (
+                  <button
+                    onClick={actionBtn.onClick}
+                    disabled={actionBtn.disabled}
+                    className="btn btn--primary"
+                  >
+                    {actionBtn.text}
+                  </button>
+                ) : (
+                  <button
+                    disabled={false}
+                    onClick={() => switchChain({ chainId: poolChainId })}
+                    className="btn btn--primary"
+                  >
+                    {`Switch to ${chainConfig[poolChainId].name}`}
+                  </button>
+                )
+              ) : (
+                <ConnectWalletBtn className="btn btn--primary" />
+              )}
+            </div>
+            <PoolInfo pool={pool} />
+          </div>
         </div>
-
-        <div className="pool__interface">
-          {position && `Your Position Id: ${position.id}`}
-          {renderPoolInterface()}
-          {address ? (
-            <button
-              onClick={actionBtn.onClick}
-              disabled={actionBtn.disabled}
-              className="btn btn--primary"
-            >
-              {actionBtn.text}
-            </button>
-          ) : (
-            <ConnectWalletBtn className="btn btn--primary" />
-          )}
-        </div>
-
-        <PoolInfo pool={pool} />
       </div>
-    </div>
-  ) : null;
+      <LoadingOverlay loading={loading} />
+    </>
+  ) : (
+    <Loader />
+  );
 };
 
 export default PoolPage;
