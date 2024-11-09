@@ -53,7 +53,7 @@ const Navbar = ({ setSwitchingNetwork }) => {
             MarketPlace
           </button>
         </Link>
-        <Link to="/dashboard">
+        {/* <Link to="/dashboard">
           <button
             className={`navbar__link ${
               pathname.includes("/dashboard") ? "navbar__link--selected" : ""
@@ -61,12 +61,12 @@ const Navbar = ({ setSwitchingNetwork }) => {
           >
             Dashboard
           </button>
-        </Link>
+        </Link> */}
       </div>
       <div className="navbar__links">
         <div onClick={() => setSwitchingNetwork(true)} className="navbar__network">
           <img className="logo" src={chainConfig[chainId].logo} alt="" />
-          <img className="dropdown" src={dropdownSvg} alt="" />
+          <img style={{ width: "25px" }} className="dropdown" src={dropdownSvg} alt="" />
         </div>
         <ConnectWalletBtn className="btn btn--connect" />
       </div>

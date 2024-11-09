@@ -391,7 +391,7 @@ button {
   padding: 4px;
   border-radius: 8px;
   border: 2px solid var(--color-primary);
-  width: 110px;
+  width: 100px;
   height: 45px;
   margin-right: 10px;
   cursor: pointer;
@@ -428,21 +428,41 @@ button {
   .navbar {
     flex-direction: column;
     row-gap: 10px;
+    padding: 10px 0;
+  }
+
+  .navbar__links {
+    width: 100%;
   }
 
   .btn--connect {
-    padding: 10px 20px;
+    padding: 8px 16px;
+    width: 50%;
   }
 
   .main {
     padding: 60px 20px;
   }
 
+  .navbar .logo__img {
+    width: 50px;
+  }
+
+  .navbar__network .logo {
+    width: 30px;
+    border-radius: 8px;
+  }
+
+  .navbar__network {
+    height: 40px;
+    width: 70px;
+  }
+
   .navbar .logo__text {
     font-size: 21px;
   }
 
-  .navbar .logo__img {
-    width: 50px;
+  .page-heading {
+    font-size: 25px;
   }
 }
