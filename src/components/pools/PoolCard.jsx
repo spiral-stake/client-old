@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import Pool from "../../contract-hooks/Pool";
-import "../../styles/PoolCard.css";
+import "../../styles/poolCard.css";
 import { formatTime, getLocalTimeFromTimestamp } from "../../utils/time";
 import token from "../../assets/images/token/token2.png";
 import { Link } from "react-router-dom";
