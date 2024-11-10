@@ -39,25 +39,34 @@ export function parseTime(time, unit) {
 }
 
 export function formatTime(timeInSeconds) {
-  if (timeInSeconds < 60) {
-    return { value: timeInSeconds, unit: timeInSeconds === 1 ? "second" : "seconds" };
+  const secondsInMinute = 60;
+  const secondsInHour = secondsInMinute * 60;
+  const secondsInDay = secondsInHour * 24;
+  const secondsInMonth = secondsInDay * 30.44; // Approximate average month length
+  const secondsInYear = secondsInDay * 365.25; // Approximate average year length
+
+  let timeUnit;
+  let timeValue;
+
+  if (timeInSeconds < secondsInMinute) {
+    timeUnit = "seconds";
+    timeValue = timeInSeconds;
+  } else if (timeInSeconds < secondsInHour) {
+    timeUnit = "minutes";
+    timeValue = Math.floor(timeInSeconds / secondsInMinute);
+  } else if (timeInSeconds < secondsInDay) {
+    timeUnit = "hours";
+    timeValue = Math.floor(timeInSeconds / secondsInHour);
+  } else if (timeInSeconds < secondsInMonth) {
+    timeUnit = "days";
+    timeValue = Math.floor(timeInSeconds / secondsInDay);
+  } else if (timeInSeconds < secondsInYear) {
+    timeUnit = "months";
+    timeValue = Math.floor(timeInSeconds / secondsInMonth);
+  } else {
+    timeUnit = "years";
+    timeValue = Math.floor(timeInSeconds / secondsInYear);
   }
 
-  const minutes = Math.floor(timeInSeconds / 60);
-  if (minutes < 60) {
-    return { value: minutes, unit: minutes === 1 ? "minute" : "minutes" };
-  }
-
-  const hours = Math.floor(minutes / 60);
-  if (hours < 24) {
-    return { value: hours, unit: hours === 1 ? "hour" : "hours" };
-  }
-
-  const days = Math.floor(hours / 24);
-  if (days < 30) {
-    return { value: days, unit: days === 1 ? "day" : "days" };
-  }
-
-  const months = Math.floor(days / 30.44); // Approximate month length (30.44 days)
-  return { value: months, unit: months === 1 ? "month" : "months" };
+  return { value: timeValue, unit: timeValue > 1 ? timeUnit + "s" : timeUnit };
 }
