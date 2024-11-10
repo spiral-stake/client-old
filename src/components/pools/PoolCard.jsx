@@ -62,9 +62,9 @@ const PoolCard = ({ poolAddress, baseToken }) => {
               </h4>
             </div>
           </div>
-          <div>
+          <div className="card__tags">
             {currentCycle && (
-              <button style={{ marginRight: "4px" }} disabled={true} className="btnYellow">
+              <button disabled={true} className="btnYellow">
                 {pool ? `Cycle ${currentCycle} / ${pool.totalCycles}` : <Skeleton />}
               </button>
             )}

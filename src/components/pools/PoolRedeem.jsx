@@ -9,7 +9,7 @@ const PoolRedeem = ({ pool, state, position, updatePosition, setActionBtn, setLo
   useEffect(() => {
     if (!position) {
       setActionBtn({
-        text: `Pool Discarded`,
+        text: `Pool ${state}`,
         disabled: true,
       });
       return;
@@ -53,7 +53,6 @@ const PoolRedeem = ({ pool, state, position, updatePosition, setActionBtn, setLo
     updatingActionBtn();
   }, [position, state, setActionBtn]);
 
-  // On all Cycles Finalized
   const handleRedeemYield = async () => {
     await pool.redeemCollateralYield(position.id);
 

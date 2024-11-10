@@ -3,11 +3,12 @@ import { chainConfig } from "../config/chainConfig";
 import { getTokens } from "./getTokens";
 import { addTokenToWallet } from "./addTokensToWallet";
 
-const amountNative = "0.0001";
-const amountYbt = "10";
+const amountYbt = "4";
 const amountBase = "10";
 
 export const onboard = async (chainId, userAddress) => {
+  const amountNative = chainConfig[chainId].onboard.amountNative;
+
   await axios.post(chainConfig[chainId].api + "/onboard", {
     userAddress,
     amountNative,
