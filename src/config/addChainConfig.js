@@ -13,7 +13,7 @@ export const addChainConfig = {
   421614: {
     chainId: "0x66eee",
     chainName: "Arbitrum Testnet",
-    rpcUrls: ["https://arbitrum-sepolia.blockpi.network/v1/rpc/public"],
+    rpcUrls: ["https://arb-sepolia.g.alchemy.com/v2/dP8O0bUE1anNSaJ9Bkub4GoVJoQMIflO"],
     nativeCurrency: {
       name: "Ether",
       symbol: "ETH",

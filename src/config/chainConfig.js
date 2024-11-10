@@ -13,7 +13,8 @@ export const chainConfig = {
       amountNative: "0.001",
     },
     default: {
-      http: ["https://arbitrum-sepolia.blockpi.network/v1/rpc/public"],
+      http: ["https://arb-sepolia.g.alchemy.com/v2/dP8O0bUE1anNSaJ9Bkub4GoVJoQMIflO"],
+      webSocket: ["wss://arb-sepolia.g.alchemy.com/v2/dP8O0bUE1anNSaJ9Bkub4GoVJoQMIflO"],
     },
   },
 

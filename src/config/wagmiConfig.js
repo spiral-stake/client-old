@@ -11,6 +11,6 @@ export const wagmiConfig = createConfig({
     [31337]: http("http://127.0.0.1:8545"),
     [31338]: http("http://127.0.0.1:8546"),
     [89346162]: http("https://rpc.reya-cronos.gelato.digital"),
-    [421614]: http("https://arbitrum-sepolia.blockpi.network/v1/rpc/public"),
+    [421614]: http("https://arb-sepolia.g.alchemy.com/v2/dP8O0bUE1anNSaJ9Bkub4GoVJoQMIflO"),
   },
 });
