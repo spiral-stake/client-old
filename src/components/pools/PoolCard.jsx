@@ -132,7 +132,12 @@ const PoolCard = ({ poolAddress, baseToken }) => {
           <div className="saleTime">
             <h3>
               {pool ? (
-                `Starts at - ${pool && getLocalTimeFromTimestamp(pool.startTime)}`
+                `Start Time - ${
+                  pool &&
+                  `${getLocalTimeFromTimestamp(pool.startTime).formattedDate} ${
+                    getLocalTimeFromTimestamp(pool.startTime).formattedTime
+                  }`
+                }`
               ) : (
                 <Skeleton />
               )}

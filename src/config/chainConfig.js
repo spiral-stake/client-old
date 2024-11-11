@@ -1,8 +1,8 @@
 export const chainConfig = {
-  421614: {
-    name: "Arbitrum Testnet",
-    id: 421614,
-    logo: "/logo/arb-logo.png",
+  89346162: {
+    name: "Reya Cronos",
+    id: 89346162,
+    logo: "/logo/reya-logo.webp",
     api: "https://api.spiralstake.xyz",
     nativeCurrency: {
       name: "Ether",
@@ -10,30 +10,31 @@ export const chainConfig = {
       decimals: 18,
     },
     onboard: {
-      amountNative: "0.001",
+      amountNative: "0.0001",
     },
     default: {
-      http: ["https://arb-sepolia.g.alchemy.com/v2/dP8O0bUE1anNSaJ9Bkub4GoVJoQMIflO"],
-      webSocket: ["wss://arb-sepolia.g.alchemy.com/v2/dP8O0bUE1anNSaJ9Bkub4GoVJoQMIflO"],
+      http: ["https://rpc.reya-cronos.gelato.digital"],
+      webSocket: ["wss://ws.reya-cronos.gelato.digital"],
     },
   },
-
-  // 89346162: {
-  //   name: "Reya Cronos",
-  //   id: 89346162,
-  //   logo: "/logo/reya-logo.webp",
+  // 421614: {
+  //   name: "Arbitrum Testnet",
+  //   id: 421614,
+  //   logo: "/logo/arb-logo.png",
   //   api: "https://api.spiralstake.xyz",
   //   nativeCurrency: {
   //     name: "Ether",
   //     symbol: "ETH",
   //     decimals: 18,
   //   },
+  //   onboard: {
+  //     amountNative: "0.001",
+  //   },
   //   default: {
-  //     http: ["https://rpc.reya-cronos.gelato.digital"],
-  //     webSocket: ["wss://ws.reya-cronos.gelato.digital"],
+  //     http: ["https://arb-sepolia.g.alchemy.com/v2/dP8O0bUE1anNSaJ9Bkub4GoVJoQMIflO"],
+  //     webSocket: ["wss://arb-sepolia.g.alchemy.com/v2/dP8O0bUE1anNSaJ9Bkub4GoVJoQMIflO"],
   //   },
   // },
-
   // 31337: {
   //   id: 31337,
   //   name: "Reya Testnet",
@@ -49,7 +50,6 @@ export const chainConfig = {
   //     webSocket: ["ws://127.0.0.1:8545"],
   //   },
   // },
-
   // 31338: {
   //   name: "Frax Testnet",
   //   id: 31338,

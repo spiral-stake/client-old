@@ -31,6 +31,8 @@ function App() {
 
     if (localStorage.getItem(address) !== "onboarded") {
       setOnboarding(true);
+    } else {
+      setOnboarding(false);
     }
   }, [address]);
 

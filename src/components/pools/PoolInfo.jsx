@@ -49,16 +49,21 @@ const PoolInfo = ({ pool }) => {
         </li>
 
         <li>
-          <small>Deposit Duration</small>
+          <small>Deposit Window</small>
           <h3>
             {pool ? formatTime(pool.cycleDepositDuration).value : <Skeleton />}{" "}
-            <small className="mx-1">{formatTime(pool.cycleDepositDuration).unit}</small>
+            <small className="mx-1">{formatTime(pool.cycleDepositDuration).unit} </small>{" "}
           </h3>
         </li>
 
         <li>
           <small>Start Time</small>
-          <h3>{pool ? getLocalTimeFromTimestamp(pool.startTime) : <Skeleton />}</h3>
+          <h3>
+            {pool ? getLocalTimeFromTimestamp(pool.startTime).formattedDate : <Skeleton />}{" "}
+            <small className="mx-1">
+              {getLocalTimeFromTimestamp(pool.startTime).formattedTime}{" "}
+            </small>
+          </h3>
         </li>
       </ul>
     </div>

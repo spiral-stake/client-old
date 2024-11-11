@@ -7,17 +7,38 @@ export function getLocalTimeFromTimestamp(timestamp) {
   // Create a new Date object using the provided timestamp
   const date = new Date(timestamp);
 
-  // Extract the local time components
-  const hours = date.getHours();
-  const minutes = date.getMinutes();
-  const seconds = date.getSeconds();
+  // Array of month abbreviations
+  const monthNames = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
 
-  // Format time (adding leading zeros for hours, minutes, and seconds if needed)
-  const formattedTime = `${hours.toString().padStart(2, "0")}:${minutes
-    .toString()
-    .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+  // Extract the date components
+  const day = date.getDate().toString().padStart(2, "0");
+  const month = monthNames[date.getMonth()]; // Get abbreviated month
+  const year = date.getFullYear();
 
-  return formattedTime;
+  // Extract the time components
+  const hours = date.getHours().toString().padStart(2, "0");
+  const minutes = date.getMinutes().toString().padStart(2, "0");
+  const seconds = date.getSeconds().toString().padStart(2, "0");
+
+  // Format date and time
+  const formattedDate = `${day} ${month}`;
+  const formattedTime = `${hours}:${minutes}:${seconds}`;
+
+  // Return the full formatted date and time
+  return { formattedDate, formattedTime };
 }
 
 export function parseTime(time, unit) {
@@ -49,22 +70,22 @@ export function formatTime(timeInSeconds) {
   let timeValue;
 
   if (timeInSeconds < secondsInMinute) {
-    timeUnit = "seconds";
+    timeUnit = "second";
     timeValue = timeInSeconds;
   } else if (timeInSeconds < secondsInHour) {
-    timeUnit = "minutes";
+    timeUnit = "minute";
     timeValue = Math.floor(timeInSeconds / secondsInMinute);
   } else if (timeInSeconds < secondsInDay) {
-    timeUnit = "hours";
+    timeUnit = "hour";
     timeValue = Math.floor(timeInSeconds / secondsInHour);
   } else if (timeInSeconds < secondsInMonth) {
-    timeUnit = "days";
+    timeUnit = "day";
     timeValue = Math.floor(timeInSeconds / secondsInDay);
   } else if (timeInSeconds < secondsInYear) {
-    timeUnit = "months";
+    timeUnit = "month";
     timeValue = Math.floor(timeInSeconds / secondsInMonth);
   } else {
-    timeUnit = "years";
+    timeUnit = "year";
     timeValue = Math.floor(timeInSeconds / secondsInYear);
   }
 
