@@ -3,23 +3,17 @@ import injectedModule from "@web3-onboard/injected-wallets";
 const injected = injectedModule();
 
 export const onboard = {
-  theme: "dark",
+  theme: "light",
   connect: {
-    autoConnectLastWallet: false,
+    autoConnectLastWallet: true,
   },
   wallets: [injected],
   chains: [
     {
-      id: "0x7a69",
+      id: "0x5535072",
       token: "ETH",
-      label: "Reya Local",
-      rpcUrl: "http://127.0.0.1:8545",
-    },
-    {
-      id: "0x7a6a",
-      token: "ETH",
-      label: "Fraxtal Local",
-      rpcUrl: "http://127.0.0.1:8546",
+      label: "Reya Cronos",
+      rpcUrl: "https://rpc.reya-cronos.gelato.digital",
     },
   ],
 };
