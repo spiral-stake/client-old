@@ -28,7 +28,12 @@ const PoolContribute = ({
   }, [address]);
 
   useEffect(() => {
-    if (!position) return;
+    if (!position) {
+      return setActionBtn({
+        text: `Not Joined`,
+        disabled: true,
+      });
+    }
 
     const updatingActionBtn = () => {
       if (position.cyclesDeposited[currentCycle] === true) {
@@ -45,14 +50,14 @@ const PoolContribute = ({
         });
       }
 
-      if (userBaseTokenBalance < pool.amountCycle) {
+      if (userBaseTokenBalance?.isLessThan(pool.amountCycle)) {
         return setActionBtn({
           text: `Insufficient ${pool.baseToken.symbol} Balance`,
           disabled: true,
         });
       }
 
-      if (userBaseTokenAllowance < pool.amountCycle) {
+      if (userBaseTokenAllowance?.isLessThan(pool.amountCycle)) {
         return setActionBtn({
           text: `Approve and Deposit`,
           disabled: false,

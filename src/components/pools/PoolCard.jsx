@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import arrow from "../../assets/images/Arrow-right-up-Line.svg";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import { useChainId } from "wagmi";
+import { displayAmount } from "../../utils/displayAmounts";
 
 const PoolCard = ({ poolAddress, baseToken }) => {
   const [pool, setPool] = useState();
@@ -55,7 +56,7 @@ const PoolCard = ({ poolAddress, baseToken }) => {
               <h3>{baseToken.symbol}</h3>
               <h4 style={{ color: "#dba501" }}>
                 {pool ? (
-                  `Win = ${pool.amountCollateralInAccounting} ${baseToken.symbol}`
+                  `Win = ${displayAmount(pool.amountCollateralInAccounting)} ${baseToken.symbol}`
                 ) : (
                   <Skeleton />
                 )}
@@ -106,7 +107,7 @@ const PoolCard = ({ poolAddress, baseToken }) => {
               <h3>
                 {pool ? (
                   <>
-                    ~ {pool.amountCollateralInAccounting}{" "}
+                    ~ {displayAmount(pool.amountCollateralInAccounting, 2)}{" "}
                     <small className="mx-1">{baseToken.symbol}</small>
                   </>
                 ) : (
@@ -119,7 +120,8 @@ const PoolCard = ({ poolAddress, baseToken }) => {
               <h3>
                 {pool ? (
                   <>
-                    {pool.amountCycle} <small className="mx-1">{baseToken.symbol}</small>
+                    {displayAmount(pool.amountCycle, 2)}{" "}
+                    <small className="mx-1">{baseToken.symbol}</small>
                   </>
                 ) : (
                   <Skeleton />

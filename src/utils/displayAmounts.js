@@ -1,8 +1,15 @@
-export const displayAmount = (amount) => {
+import BigNumber from "bignumber.js";
+
+export const displayAmount = (amount, decimals = 3) => {
   if (amount === undefined) return;
 
-  if (amount == 0) return "0.00";
-  if (amount.toFixed(3) > 0) return amount.toFixed(3);
+  if (amount.isZero()) return "0.00";
 
-  return "< 0.001";
+  if (amount.isInteger()) {
+    return amount.toString();
+  }
+
+  const formattedAmount = amount.toFixed(decimals);
+
+  return new BigNumber(formattedAmount).isGreaterThan(0) ? formattedAmount : "< 0.001";
 };

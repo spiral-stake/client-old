@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 import { handleAsync } from "../../utils/handleAsyncFunction";
 import Skeleton from "react-loading-skeleton";
+import { displayAmount } from "../../utils/displayAmounts";
 
 const PoolJoin = ({ pool, allPositions, getAllPositions, setActionBtn, setLoading }) => {
   const [ybtCollateral, setYbtCollateral] = useState(pool.collateralTokens[0]);
@@ -35,14 +36,14 @@ const PoolJoin = ({ pool, allPositions, getAllPositions, setActionBtn, setLoadin
         });
       }
 
-      if (userYbtCollateralBalance < amountYbtCollateral) {
+      if (userYbtCollateralBalance?.isLessThan(amountYbtCollateral)) {
         return setActionBtn({
           text: `Insufficient ${ybtCollateral.symbol} Balance`,
           disabled: true,
         });
       }
 
-      if (userYbtCollateralAllowance >= amountYbtCollateral) {
+      if (userYbtCollateralAllowance?.isGreaterThanOrEqualTo(amountYbtCollateral)) {
         return setActionBtn({
           text: "Join Pool",
           disabled: false,
@@ -52,7 +53,7 @@ const PoolJoin = ({ pool, allPositions, getAllPositions, setActionBtn, setLoadin
 
       return setActionBtn({
         text: `Approve and Join`,
-        disabled: userYbtCollateralBalance < amountYbtCollateral ? true : false,
+        disabled: userYbtCollateralBalance?.isLessThan(amountYbtCollateral) ? true : false,
         onClick: handleAsync(handleApproveAndJoin, setLoading),
       });
     };
@@ -80,6 +81,7 @@ const PoolJoin = ({ pool, allPositions, getAllPositions, setActionBtn, setLoadin
 
   const updateUserYbtCollateralAllowance = async () => {
     const allowance = await ybtCollateral.allowance(address, pool.address);
+
     setUserYbtCollateralAllowance(allowance);
   };
 
@@ -113,12 +115,12 @@ const PoolJoin = ({ pool, allPositions, getAllPositions, setActionBtn, setLoadin
           top: "5px",
         }}
       >
-        ~{pool.amountCollateralInAccounting} {pool.baseToken.symbol}
+        ~{displayAmount(pool.amountCollateralInAccounting)} {pool.baseToken.symbol}
       </span>
       <span className="input-box">
         {amountYbtCollateral ? (
           <>
-            <span className="input">{amountYbtCollateral.toFixed(4)}</span>
+            <span className="input">{amountYbtCollateral.toFixed(3)}</span>
             <select onChange={handleYbtCollateralChange} value={ybtCollateral.index} name="" id="">
               {pool.collateralTokens.map((token, index) => (
                 <option key={index} value={index}>

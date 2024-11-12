@@ -1,5 +1,6 @@
 import { Base } from "./Base";
 import { abi as POOL_FACTORY_ABI } from "../abi/SpiralPoolFactory.sol/SpiralPoolFactory.json";
+import { parseUnits } from "../utils/formatUnits";
 
 export default class PoolFactory extends Base {
   constructor(poolFactoryAddress) {
@@ -18,7 +19,7 @@ export default class PoolFactory extends Base {
   async createSpiralPool(baseToken, amountCycle, totalCycles, cycleDuration, startInterval) {
     const receipt = await this.write("createSpiralPool", [
       baseToken.address,
-      this.parseUnits(amountCycle, baseToken.decimals),
+      parseUnits(amountCycle, baseToken.decimals),
       cycleDuration,
       totalCycles,
       startInterval,

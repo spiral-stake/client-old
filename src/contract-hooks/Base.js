@@ -6,7 +6,6 @@ import {
   getAccount,
   waitForTransactionReceipt,
 } from "wagmi/actions";
-import { formatUnits, parseUnits } from "viem";
 import { wagmiConfig as config } from "../config/wagmiConfig";
 const { connector } = getAccount(config);
 
@@ -56,15 +55,6 @@ export class Base {
     // await this.wait(4);
 
     return waitForTransactionReceipt(config, { hash, confirmations: 1 });
-  }
-
-  formatUnits(value, decimals = 18) {
-    return Number(formatUnits(value, decimals));
-  }
-
-  parseUnits(value, decimals = 18) {
-    value = value !== "string" ? value.toString() : value;
-    return parseUnits(value, decimals);
   }
 
   // Need to remove this later (as this only for testing purposes)

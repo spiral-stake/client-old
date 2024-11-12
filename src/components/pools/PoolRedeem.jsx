@@ -19,32 +19,32 @@ const PoolRedeem = ({ pool, state, position, updatePosition, setActionBtn, setLo
       if (state === "DISCARDED") {
         setAmountCollateral(position.amountCollateral);
 
-        if (!position.amountCollateral) {
-          setActionBtn({
-            text: `Redeemed YBT Collateral`,
-            disabled: true,
-          });
-        } else {
+        if (position.amountCollateral?.isGreaterThan(0)) {
           setActionBtn({
             text: `Redeem YBT Collateral`,
             disabled: false,
             onClick: handleAsync(handleRedeemCollateralIfDiscarded, setLoading),
+          });
+        } else {
+          setActionBtn({
+            text: `Redeemed YBT Collateral`,
+            disabled: true,
           });
         }
       } else {
         const _amountCollateralYield = await pool.getCollateralYield(position);
         setAmountCollateralYield(_amountCollateralYield);
 
-        if (!_amountCollateralYield) {
-          setActionBtn({
-            text: `Redeemed YBT Yield`,
-            disabled: true,
-          });
-        } else {
+        if (_amountCollateralYield?.isGreaterThan(0)) {
           setActionBtn({
             text: `Redeem YBT Yield`,
             disabled: false,
             onClick: handleAsync(handleRedeemYield, setLoading),
+          });
+        } else {
+          setActionBtn({
+            text: `Redeemed YBT Yield`,
+            disabled: true,
           });
         }
       }
@@ -65,8 +65,10 @@ const PoolRedeem = ({ pool, state, position, updatePosition, setActionBtn, setLo
     await updatePosition(position.id);
   };
 
-  return position ? (
-    (state === "DISCARDED" && amountCollateral) || amountCollateralYield ? (
+  return (
+    position &&
+    ((state === "DISCARDED" && amountCollateral?.isGreaterThan(0)) ||
+      amountCollateralYield?.isGreaterThan(0)) && (
       <div className="pool__interface-box">
         <span className="label">Redeem Collateral</span>
         <span className="input-box">
@@ -78,8 +80,8 @@ const PoolRedeem = ({ pool, state, position, updatePosition, setActionBtn, setLo
           </span>
         </span>
       </div>
-    ) : null
-  ) : null;
+    )
+  );
 };
 
 export default PoolRedeem;
