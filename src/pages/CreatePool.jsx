@@ -13,7 +13,7 @@ import { chainConfig } from "../config/chainConfig";
 import "../styles/createPool.css";
 import { parseTime } from "../utils/time";
 
-const CreatePool = ({ baseTokens, poolFactory }) => {
+const CreatePool = ({ baseTokens, poolFactory, setSwitchingNetwork }) => {
   const [pool, setPool] = useState({
     baseToken: undefined,
     amountCycle: "",
@@ -79,7 +79,6 @@ const CreatePool = ({ baseTokens, poolFactory }) => {
 
   const handleBaseTokenChange = async (e) => {
     const baseToken = await readBaseToken(chainId, e.target.value);
-    console.log(baseToken);
     setPool({ ...pool, baseToken });
   };
 
@@ -157,13 +156,23 @@ const CreatePool = ({ baseTokens, poolFactory }) => {
             />
           </div>
           {address ? (
-            <button
-              onClick={actionBtn.onClick}
-              disabled={actionBtn.disabled}
-              className="btn btn--primary"
-            >
-              {actionBtn.text}
-            </button>
+            chainConfig[chainId] ? (
+              <button
+                onClick={actionBtn.onClick}
+                disabled={actionBtn.disabled}
+                className="btn btn--primary"
+              >
+                {actionBtn.text}
+              </button>
+            ) : (
+              <button
+                disabled={false}
+                onClick={() => setSwitchingNetwork(true)}
+                className="btn btn--primary"
+              >
+                {`Switch Chain`}
+              </button>
+            )
           ) : (
             <ConnectWalletBtn className="btn btn--primary" />
           )}

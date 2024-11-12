@@ -38,6 +38,7 @@ export default class PoolFactory extends Base {
   }
 
   async getPoolsForUnderlying(underlyingTokenAddress) {
-    return this.read("getSpiralPoolsForBaseToken", [underlyingTokenAddress]);
+    const pools = await this.read("getSpiralPoolsForBaseToken", [underlyingTokenAddress]);
+    return pools.reverse();
   }
 }

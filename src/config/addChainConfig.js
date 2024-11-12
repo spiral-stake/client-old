@@ -21,4 +21,24 @@ export const addChainConfig = {
     },
     blockExplorerUrls: ["https://sepolia.arbiscan.io/"],
   },
+  31337: {
+    chainId: "0x7a69",
+    chainName: "Reya Local",
+    rpcUrls: ["http://127.0.0.1:8545"],
+    nativeCurrency: {
+      decimals: 18,
+      name: "Ether",
+      symbol: "ETH",
+    },
+  },
+  31338: {
+    chainId: "0x7a6a",
+    chainName: "Fraxtal Local",
+    rpcUrls: ["http://127.0.0.1:8546"],
+    nativeCurrency: {
+      decimals: 18,
+      name: "Frax Ether",
+      symbol: "FRXETH",
+    },
+  },
 };

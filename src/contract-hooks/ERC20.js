@@ -15,8 +15,8 @@ export default class ERC20 extends Base {
   /////////////////////////
 
   async approve(spender, amount) {
+    console.log(amount, this.decimals);
     const parsedAmount = this.parseUnits(amount, this.decimals);
-    console.log(parsedAmount);
     return this.write("approve", [spender, parsedAmount]);
   }
 

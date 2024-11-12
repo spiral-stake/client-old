@@ -25,6 +25,8 @@ const PoolJoin = ({ pool, allPositions, getAllPositions, setActionBtn, setLoadin
   }, [address]);
 
   useEffect(() => {
+    if (!amountYbtCollateral) return;
+
     const updatingActionBtn = () => {
       if (allPositions.length == pool.totalPositions) {
         return setActionBtn({
@@ -56,7 +58,13 @@ const PoolJoin = ({ pool, allPositions, getAllPositions, setActionBtn, setLoadin
     };
 
     updatingActionBtn();
-  }, [userYbtCollateralBalance, userYbtCollateralAllowance, allPositions, ybtCollateral]);
+  }, [
+    userYbtCollateralBalance,
+    userYbtCollateralAllowance,
+    allPositions,
+    ybtCollateral,
+    amountYbtCollateral,
+  ]);
 
   const getAmountCollateral = async () => {
     setAmountYbtCollateral(undefined);
@@ -93,8 +101,6 @@ const PoolJoin = ({ pool, allPositions, getAllPositions, setActionBtn, setLoadin
       getAllPositions(),
     ]);
   };
-
-  console.log(ybtCollateral);
 
   return (
     <div className="pool__interface-box">

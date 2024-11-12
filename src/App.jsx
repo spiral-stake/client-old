@@ -62,7 +62,13 @@ function App() {
         <Routes>
           <Route
             path={"/pools/create"}
-            element={<CreatePool poolFactory={poolFactory} baseTokens={baseTokens} />}
+            element={
+              <CreatePool
+                poolFactory={poolFactory}
+                baseTokens={baseTokens}
+                setSwitchingNetwork={setSwitchingNetwork}
+              />
+            }
           />
           <Route path={"/pools/:address"} element={<PoolPage />} />
           <Route

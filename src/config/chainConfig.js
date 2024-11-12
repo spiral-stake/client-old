@@ -45,6 +45,9 @@ export const chainConfig = {
   //     name: "Ether",
   //     symbol: "ETH",
   //   },
+  //   onboard: {
+  //     amountNative: "1",
+  //   },
   //   default: {
   //     http: ["http://127.0.0.1:8545"],
   //     webSocket: ["ws://127.0.0.1:8545"],
@@ -59,6 +62,9 @@ export const chainConfig = {
   //     decimals: 18,
   //     name: "Ether",
   //     symbol: "ETH",
+  //   },
+  //   onboard: {
+  //     amountNative: "1",
   //   },
   //   default: {
   //     http: ["http://127.0.0.1:8546"],

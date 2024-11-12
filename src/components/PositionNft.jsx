@@ -39,7 +39,7 @@ const PositionNft = ({ pool, positionNft, updatePosition }) => {
         </p>
         {address === positionNft.owner && (
           <p>
-            Yield: {displayAmount(amountCollateralYield)} {positionNft.collateralToken.symbol}
+            YBT Yield: {displayAmount(amountCollateralYield)} {positionNft.collateralToken.symbol}
             {amountCollateralYield > 0 && (
               <span onClick={handleRedeemYield} className="btn btn--claim">
                 Claim
