@@ -26,6 +26,9 @@ const Navbar = ({ setSwitchingNetwork }) => {
             Home
           </button>
         </Link> */}
+        <Link target="blank" to="https://spiral-stake.gitbook.io/spiral-stake-docs">
+          <button className={`navbar__link `}>Learn</button>
+        </Link>
         <Link to="/pools">
           <button
             className={`navbar__link ${
@@ -50,7 +53,7 @@ const Navbar = ({ setSwitchingNetwork }) => {
               pathname.includes("/marketplace") ? "navbar__link--selected" : ""
             }`}
           >
-            MarketPlace
+            Market
           </button>
         </Link>
         {/* <Link to="/dashboard">
