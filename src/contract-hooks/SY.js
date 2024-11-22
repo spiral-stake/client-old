@@ -26,7 +26,7 @@ export default class SY extends ERC20 {
   // SPECIFIC SY FUNCTIONS
   /////////////////////////
 
-  async getYbtUnderlying() {
+  async getUnderlying() {
     const assetInfo = await this.read("assetInfo");
     return assetInfo[1];
   }

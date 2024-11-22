@@ -6,15 +6,13 @@ import PoolPage from "./pages/Pool.jsx";
 import Navbar from "./components/Navbar";
 import CreatePool from "./pages/CreatePool.jsx";
 import "./styles/App.css";
-import Marketplace from "./pages/Marketplace.jsx";
-import Experiment from "./components/pools/Spiral.jsx";
+import Market from "./pages/Market.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import { useEffect, useState } from "react";
 import NetworkOverlay from "./components/NetworkOverlay.jsx";
 import { useAccount, useChainId } from "wagmi";
 import { readBaseTokens } from "./config/contractsData.js";
 import PoolFactory from "./contract-hooks/PoolFactory.js";
-import { onboard } from "./utils/onboard.js";
 import OnboardingOverlay from "./components/OnboardingOverlay.jsx";
 
 function App() {
@@ -24,6 +22,7 @@ function App() {
   const [onboarding, setOnboarding] = useState();
 
   const chainId = useChainId();
+
   const { address } = useAccount();
 
   useEffect(() => {
@@ -75,9 +74,8 @@ function App() {
             path={"/pools"}
             element={<Pools baseTokens={baseTokens} poolFactory={poolFactory} />}
           />
-          <Route path={"/marketplace"} element={<Marketplace />} />
+          <Route path={"/marketplace"} element={<Market />} />
           <Route path="dashboard" element={<Dashboard />} />
-          <Route path={"/experiment"} element={<Experiment />} />
           {/* <Route path={"/"} element={<Home />} /> */}
 
           <Route

@@ -1,37 +1,37 @@
 export const readBaseTokens = async (chainId) => {
-  const { underlying: underlyingTokensObj } = await import(`../addresses/${chainId}.json`);
+  const { baseTokens: baseTokensObj } = await import(`../addresses/${chainId}.json`);
 
-  const underlyingTokens = [];
+  const baseTokens = [];
 
-  for (let underlyingObj of Object.values(underlyingTokensObj)) {
-    underlyingTokens.push({
-      address: underlyingObj.address,
-      name: underlyingObj.name,
-      symbol: underlyingObj.symbol === "wETH" ? "ETH" : underlyingObj.symbol,
-      decimals: underlyingObj.decimals,
+  for (let baseTokenObj of Object.values(baseTokensObj)) {
+    baseTokens.push({
+      address: baseTokenObj.address,
+      name: baseTokenObj.name,
+      symbol: baseTokenObj.symbol === "wETH" ? "ETH" : baseTokenObj.symbol,
+      decimals: baseTokenObj.decimals,
     });
   }
 
-  return underlyingTokens;
+  return baseTokens;
 };
 
-export const readBaseToken = async (chainId, underlyingTokenSymbol) => {
-  const { underlying: underlyingTokensObj } = await import(`../addresses/${chainId}.json`);
+export const readBaseToken = async (chainId, baseTokenSymbol) => {
+  const { baseTokens: baseTokensObj } = await import(`../addresses/${chainId}.json`);
 
-  if (underlyingTokenSymbol === "ETH") underlyingTokenSymbol = "wETH";
+  if (baseTokenSymbol === "ETH") baseTokenSymbol = "wETH";
 
-  const underlyingObj = underlyingTokensObj[underlyingTokenSymbol];
+  const baseTokenObj = baseTokensObj[baseTokenSymbol];
 
   const ybts = [];
-  for (let ybtObj of Object.values(underlyingObj.YBTs)) {
+  for (let ybtObj of Object.values(baseTokenObj.YBTs)) {
     ybts.push({ ...ybtObj });
   }
 
   return {
-    address: underlyingObj.address,
-    name: underlyingObj.name,
-    symbol: underlyingObj.symbol === "wETH" ? "ETH" : underlyingObj.symbol,
-    decimals: underlyingObj.decimals,
+    address: baseTokenObj.address,
+    name: baseTokenObj.name,
+    symbol: baseTokenObj.symbol === "wETH" ? "ETH" : baseTokenObj.symbol,
+    decimals: baseTokenObj.decimals,
     ybts,
   };
 };

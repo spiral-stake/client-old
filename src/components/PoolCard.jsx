@@ -1,13 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
-import Pool from "../../contract-hooks/Pool";
-import "../../styles/poolCard.css";
-import { formatTime, getLocalTimeFromTimestamp } from "../../utils/time";
-import token from "../../assets/images/token/token2.png";
+import Pool from "../contract-hooks/Pool";
+import "../styles/poolCard.css";
+import { formatTime, getLocalTimeFromTimestamp } from "../utils/time";
+import token from "../assets/images/token/token2.png";
 import { Link } from "react-router-dom";
-import arrow from "../../assets/images/Arrow-right-up-Line.svg";
+import arrow from "../assets/images/Arrow-right-up-Line.svg";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import { useChainId } from "wagmi";
-import { displayAmount } from "../../utils/displayAmounts";
+import { displayAmount } from "../utils/displayAmounts";
 
 const PoolCard = ({ poolAddress, baseToken }) => {
   const [pool, setPool] = useState();
@@ -56,7 +56,7 @@ const PoolCard = ({ poolAddress, baseToken }) => {
               <h3>{baseToken.symbol}</h3>
               <h4 style={{ color: "#dba501" }}>
                 {pool ? (
-                  `Win = ${displayAmount(pool.amountCollateralInAccounting)} ${baseToken.symbol}`
+                  `Win = ${displayAmount(pool.amountCollateralInBase)} ${baseToken.symbol}`
                 ) : (
                   <Skeleton />
                 )}
@@ -107,7 +107,7 @@ const PoolCard = ({ poolAddress, baseToken }) => {
               <h3>
                 {pool ? (
                   <>
-                    ~ {displayAmount(pool.amountCollateralInAccounting, 2)}{" "}
+                    ~ {displayAmount(pool.amountCollateralInBase, 2)}{" "}
                     <small className="mx-1">{baseToken.symbol}</small>
                   </>
                 ) : (

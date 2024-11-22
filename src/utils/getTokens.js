@@ -4,8 +4,8 @@ export const getTokens = async (chainId) => {
 
   const data = await import(`../addresses/${chainId}.json`);
 
-  Object.keys(data.underlying).forEach((baseTokenKey) => {
-    const baseToken = data.underlying[baseTokenKey];
+  Object.keys(data.baseTokens).forEach((baseTokenKey) => {
+    const baseToken = data.baseTokens[baseTokenKey];
     baseTokens.push(baseToken);
 
     Object.keys(baseToken.YBTs).forEach((ybtKey) => {

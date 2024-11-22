@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
-import PoolCard from "../components/pools/PoolCard";
+import PoolCard from "../components/PoolCard";
 import "../styles/pools.css";
 import { readBaseToken, readBaseTokens } from "../config/contractsData";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useChainId } from "wagmi";
-import ClipLoader from "react-spinners/ClipLoader";
 import Loader from "../components/Loader";
 
 const Pools = ({ baseTokens, poolFactory }) => {
@@ -37,7 +36,7 @@ const Pools = ({ baseTokens, poolFactory }) => {
     setPoolAddresses(undefined);
 
     const fetchPoolAddresses = async () => {
-      const _poolAddresses = await poolFactory.getPoolsForUnderlying(baseToken.address);
+      const _poolAddresses = await poolFactory.getPoolsForBaseToken(baseToken.address);
       setPoolAddresses(_poolAddresses);
     };
 

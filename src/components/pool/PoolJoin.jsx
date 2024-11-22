@@ -115,7 +115,7 @@ const PoolJoin = ({ pool, allPositions, getAllPositions, setActionBtn, setLoadin
           top: "5px",
         }}
       >
-        ~{displayAmount(pool.amountCollateralInAccounting)} {pool.baseToken.symbol}
+        ~{displayAmount(pool.amountCollateralInBase)} {pool.baseToken.symbol}
       </span>
       <span className="input-box">
         {amountYbtCollateral ? (

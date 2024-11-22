@@ -1,7 +1,13 @@
 import { useAccount } from "wagmi";
-import positionNftImage from "../assets/images/position-nft.png";
+import positionNftImage from "../../assets/images/position-nft.png";
 
-const Boxes = ({ totalPositions, boxSize, spokeLength, handlePositionBoxClick, currentCycle }) => {
+const PositionBoxes = ({
+  totalPositions,
+  boxSize,
+  spokeLength,
+  handlePositionBoxClick,
+  currentCycle,
+}) => {
   const { address } = useAccount();
 
   return totalPositions.map((position, index) => {
@@ -43,4 +49,4 @@ const Boxes = ({ totalPositions, boxSize, spokeLength, handlePositionBoxClick, c
   });
 };
 
-export default Boxes;
+export default PositionBoxes;

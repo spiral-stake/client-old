@@ -1,6 +1,6 @@
-import "../../styles/overlay.css";
-import close from "../../assets/images/close.svg";
-import PositionNft from "../PositionNft";
+import "../styles/overlay.css";
+import close from "../assets/images/close.svg";
+import PositionNft from "./PositionNft";
 
 const PositionOverlay = ({ pool, closePositionOverlay, positionNft, updatePosition }) => {
   return (

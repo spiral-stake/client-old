@@ -10,7 +10,7 @@ const PoolInfo = ({ pool }) => {
           <h3>
             {pool ? (
               <>
-                ~{displayAmount(pool.amountCollateralInAccounting)}{" "}
+                ~{displayAmount(pool.amountCollateralInBase)}{" "}
                 <small className="mx-1">{pool.baseToken.symbol}</small>
               </>
             ) : (

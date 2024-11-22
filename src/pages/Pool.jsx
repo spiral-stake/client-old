@@ -3,12 +3,12 @@ import { useParams, useSearchParams } from "react-router-dom";
 import Pool from "../contract-hooks/Pool.js";
 import "../styles/pool.css";
 import { useAccount, useChainId, useSwitchChain } from "wagmi";
-import PoolJoin from "../components/pools/PoolJoin.jsx";
-import Spiral from "../components/pools/Spiral.jsx";
-import PoolRedeem from "../components/pools/PoolRedeem.jsx";
-import PoolContribute from "../components/pools/PoolContribute.jsx";
+import PoolJoin from "../components/pool/PoolJoin.jsx";
+import Spiral from "../components/spiral/Spiral.jsx";
+import PoolRedeem from "../components/pool/PoolRedeem.jsx";
+import PoolContribute from "../components/pool/PoolContribute.jsx";
 import ConnectWalletBtn from "../components/ConnectWalletBtn.jsx";
-import PoolInfo from "../components/pools/PoolInfo.jsx";
+import PoolInfo from "../components/pool/PoolInfo.jsx";
 import LoadingOverlay from "../components/LoadingOverlay.jsx";
 import { chainConfig } from "../config/chainConfig.js";
 import Loader from "../components/Loader.jsx";
@@ -48,7 +48,7 @@ const PoolPage = () => {
         _pool.getCyclesFinalized(),
       ]);
 
-      setState(_pool.calcPoolState(_allPositions.length, cyclesFinalized));
+      setState(_pool.calcPoolState(_allPositions.length, _cyclesFinalized));
       setCyclesFinalized(_cyclesFinalized);
       setAllPositions(_allPositions);
     }

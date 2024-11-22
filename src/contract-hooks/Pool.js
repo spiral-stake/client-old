@@ -27,14 +27,14 @@ export default class Pool extends Base {
 
     const [
       amountCycle,
-      amountCollateralInAccounting,
+      amountCollateralInBase,
       cycleDuration,
       cycleDepositDuration,
       totalCycles,
       startTime,
     ] = await Promise.all([
       instance.read("getamountCycle", [], chainId),
-      instance.read("getAmountCollateralInAccounting", [], chainId),
+      instance.read("getAmountCollateralInBase", [], chainId),
       instance.read("getCycleDuration", [], chainId),
       instance.read("getCycleDepositDuration", [], chainId),
       instance.read("getTotalCycles", [], chainId),
@@ -45,13 +45,13 @@ export default class Pool extends Base {
 
     instance.address = instance.address;
     instance.amountCycle = formatUnits(amountCycle);
-    instance.amountCollateralInAccounting = formatUnits(amountCollateralInAccounting);
+    instance.amountCollateralInBase = formatUnits(amountCollateralInBase);
     instance.cycleDuration = parseInt(cycleDuration);
     instance.cycleDepositDuration = parseInt(cycleDepositDuration);
     instance.totalCycles = parseInt(totalCycles);
     instance.totalPositions = parseInt(totalCycles);
     instance.startTime = parseInt(startTime);
-    instance.endTime = instance.startTime + instance.cycleDuration * instance.totalCycles;
+    instance.endTime = instance.startTime + instance.cycleDuration * instance.totalCycles; // Just for display
 
     return instance;
   }
@@ -132,13 +132,19 @@ export default class Pool extends Base {
 
     if (timestamp < this.startTime) return "WAITING";
     else if (positionsFilled < this.totalPositions) return "DISCARDED";
-    else if (timestamp >= this.endTime || cyclesFinalized === this.totalCycles) return "ENDED";
+    else if (cyclesFinalized === this.totalCycles) return "ENDED";
     else return "LIVE";
   }
 
   calcCurrentCycle() {
     const timestamp = this.currentTimestamp();
-    return Math.floor((timestamp - this.startTime) / this.cycleDuration) + 1;
+    let currentCycle = Math.floor((timestamp - this.startTime) / this.cycleDuration) + 1;
+
+    if (currentCycle > this.totalCycles) {
+      currentCycle = this.totalCycles;
+    }
+
+    return currentCycle;
   }
 
   calcIsCycleDepositWindowOpen(currentCycle) {

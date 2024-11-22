@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
-import Spokes from "../Spokes";
-import Boxes from "../Boxes";
+import Spokes from "./Spokes";
+import PositionBoxes from "./PositionBoxes";
 import "../../styles/spiral.css";
-import PositionOverlay from "./PositionOverlay";
+import PositionOverlay from "../PositionOverlay";
 
 const defaultSpokeLength = 600;
 
@@ -66,7 +66,7 @@ const Spiral = ({ pool, allPositions: filledPositions, updatePosition, currentCy
       style={{ width: spokeLength, height: spokeLength }}
     >
       <Spokes spokeLength={spokeLength} />
-      <Boxes
+      <PositionBoxes
         currentCycle={currentCycle}
         handlePositionBoxClick={openPositionOverlay}
         totalPositions={totalPositions}

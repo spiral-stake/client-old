@@ -34,12 +34,12 @@ export default class PoolFactory extends Base {
   // READ FUNCTIONS
   /////////////////////////
 
-  async getSyTokensForUnderlying(underlyingTokenAddress) {
-    return this.read("getValidSYCollateralTokensForBaseToken", [underlyingTokenAddress]);
+  async getSyTokensForBaseToken(baseTokenAddress) {
+    return this.read("getValidSYCollateralTokensForBaseToken", [baseTokenAddress]);
   }
 
-  async getPoolsForUnderlying(underlyingTokenAddress) {
-    const pools = await this.read("getSpiralPoolsForBaseToken", [underlyingTokenAddress]);
+  async getPoolsForBaseToken(baseTokenAddress) {
+    const pools = await this.read("getSpiralPoolsForBaseToken", [baseTokenAddress]);
     return pools.reverse();
   }
 }
