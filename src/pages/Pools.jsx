@@ -13,7 +13,7 @@ const Pools = ({ baseTokens, poolFactory }) => {
   const [poolAddresses, setPoolAddresses] = useState();
 
   const navigate = useNavigate();
-  const chainId = useChainId();
+  const appChainId = useChainId();
   const baseTokenSymbol = useSearchParams()[0].get("baseToken");
 
   useEffect(() => {
@@ -21,7 +21,7 @@ const Pools = ({ baseTokens, poolFactory }) => {
 
     async function initializeBaseToken() {
       if (baseTokenSymbol) {
-        const _baseToken = await readBaseToken(chainId, baseTokenSymbol);
+        const _baseToken = await readBaseToken(appChainId, baseTokenSymbol);
         return setBaseToken(_baseToken);
       }
       return setBaseToken(baseTokens[0]);

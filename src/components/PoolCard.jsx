@@ -16,7 +16,7 @@ const PoolCard = ({ poolAddress, baseToken }) => {
   const [positionsFilled, setPositionsFilled] = useState();
   const [cyclesFinalized, setCyclesFinalized] = useState();
 
-  const chainId = useChainId();
+  const poolChainId = useChainId();
 
   useEffect(() => {
     const getPool = async () => {
@@ -163,7 +163,9 @@ const PoolCard = ({ poolAddress, baseToken }) => {
               <img style={{ width: "25px", margin: "0 5px" }} src="/images/key.svg" alt="" />
             )}
             {pool ? (
-              <Link to={`/pools/${pool.address}?baseToken=${baseToken.symbol}&chainId=${chainId}`}>
+              <Link
+                to={`/pools/${pool.address}?baseToken=${baseToken.symbol}&poolChainId=${poolChainId}`}
+              >
                 <a className="btn btn--primary btn--view">
                   view <img src={arrow} />
                 </a>

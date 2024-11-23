@@ -10,9 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@web3-onboard/core": "^2.22.3",
-    "@web3-onboard/injected-wallets": "^2.11.2",
-    "@web3-onboard/react": "^2.9.3",
+    "@rainbow-me/rainbowkit": "^2.2.0",
     "axios": "^1.7.7",
     "bignumber.js": "^9.1.2",
     "date-fns": "^4.0.0",

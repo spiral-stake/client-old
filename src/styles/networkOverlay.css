@@ -25,6 +25,10 @@
   margin-bottom: 10px;
 }
 
+.network-option--selected {
+  background: #2a2a2a;
+}
+
 .network-option.testnet {
   grid-column: span 2; /* Span the entire row for testnet option */
   background: #333333;

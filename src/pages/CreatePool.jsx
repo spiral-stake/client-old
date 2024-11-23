@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import Input from "../components/input";
 import TokenInput from "../components/TokenInput";
-import { readBaseTokens, readBaseToken } from "../config/contractsData";
+import { readBaseToken } from "../config/contractsData";
 import ConnectWalletBtn from "../components/ConnectWalletBtn";
-import { useAccount, useChainId } from "wagmi";
-import PoolFactory from "../contract-hooks/PoolFactory";
+import { useAccount } from "wagmi";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { handleAsync } from "../utils/handleAsyncFunction";
@@ -27,8 +26,7 @@ const CreatePool = ({ baseTokens, poolFactory, setSwitchingNetwork }) => {
   const [actionBtn, setActionBtn] = useState({ text: "", onClick: () => {}, disabled: false });
   const [loading, setLoading] = useState(false);
 
-  const { address } = useAccount();
-  const chainId = useChainId();
+  const { address, chainId } = useAccount();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -108,7 +106,7 @@ const CreatePool = ({ baseTokens, poolFactory, setSwitchingNetwork }) => {
     );
 
     await axios.post(chainConfig[chainId].api + "/schedule-pool-cronjob", { poolAddress });
-    navigate(`/pools/${poolAddress}?baseToken=${baseToken.symbol}&chainId=${chainId}`);
+    navigate(`/pools/${poolAddress}?baseToken=${baseToken.symbol}&poolChainId=${chainId}`);
   };
 
   return (

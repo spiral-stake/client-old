@@ -2,19 +2,14 @@ import { useAccount, useChainId, useSwitchChain } from "wagmi";
 import { onboard } from "../utils/onboard";
 import { handleAsync } from "../utils/handleAsyncFunction";
 import { useState } from "react";
-import { addChainConfig } from "../config/addChainConfig";
 import ClipLoader from "react-spinners/ClipLoader";
 
 const OnboardingOverlay = ({ onboarding, setOnboarding }) => {
   const [loading, setLoading] = useState();
 
-  const chainId = useChainId();
-  const { address } = useAccount();
-  const { switchChain } = useSwitchChain();
+  const { address, chainId } = useAccount();
 
   const handleOnboarding = async () => {
-    switchChain({ chainId, addEthereumChainParameter: { ...addChainConfig[chainId] } });
-
     await onboard(chainId, address);
     setOnboarding(false);
   };

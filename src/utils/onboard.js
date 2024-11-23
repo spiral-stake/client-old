@@ -7,6 +7,9 @@ const amountYbt = "10";
 const amountBase = "10";
 
 export const onboard = async (chainId, userAddress) => {
+  let onboarded = JSON.parse(localStorage.getItem(userAddress));
+  if (!onboarded) onboarded = {};
+
   const amountNative = chainConfig[chainId].onboard.amountNative;
 
   await axios.post(chainConfig[chainId].api + "/onboard", {
@@ -21,5 +24,6 @@ export const onboard = async (chainId, userAddress) => {
   const baseTokenPromises = baseTokens.map((baseToken) => addTokenToWallet(baseToken));
   await Promise.all([...ybtPromises, ...baseTokenPromises]);
 
-  localStorage.setItem(userAddress, "onboarded");
+  onboarded[chainId] = true;
+  localStorage.setItem(userAddress, JSON.stringify(onboarded));
 };

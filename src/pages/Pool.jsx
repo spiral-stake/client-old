@@ -30,12 +30,11 @@ const PoolPage = () => {
   });
   const [loading, setLoading] = useState(false);
 
-  const { address } = useAccount();
-  const userChainId = useChainId();
+  const { address, chainId } = useAccount();
   const { switchChain } = useSwitchChain();
   const { address: poolAddress } = useParams();
   const baseTokenSymbol = useSearchParams()[0].get("baseToken");
-  const poolChainId = parseInt(useSearchParams()[0].get("chainId"));
+  const poolChainId = parseInt(useSearchParams()[0].get("poolChainId"));
 
   useEffect(() => {
     async function getPool() {
@@ -180,7 +179,7 @@ const PoolPage = () => {
               {/* {position && `Your Position Id: ${position.id}`} */}
               {renderPoolInterface()}
               {address ? (
-                userChainId === poolChainId ? (
+                chainId === poolChainId ? (
                   <button
                     onClick={actionBtn.onClick}
                     disabled={actionBtn.disabled}

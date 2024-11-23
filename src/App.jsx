@@ -9,7 +9,7 @@ import "./styles/App.css";
 import Market from "./pages/Market.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import { useEffect, useState } from "react";
-import NetworkOverlay from "./components/NetworkOverlay.jsx";
+import AppNetworkOverlay from "./components/AppNetworkOverlay.jsx";
 import { useAccount, useChainId } from "wagmi";
 import { readBaseTokens } from "./config/contractsData.js";
 import PoolFactory from "./contract-hooks/PoolFactory.js";
@@ -21,25 +21,27 @@ function App() {
   const [switchingNetwork, setSwitchingNetwork] = useState(false);
   const [onboarding, setOnboarding] = useState();
 
-  const chainId = useChainId();
+  const appChainId = useChainId();
 
-  const { address } = useAccount();
+  const { address, chainId } = useAccount();
 
   useEffect(() => {
-    if (!address) return;
+    if (!address || chainId !== appChainId) return setOnboarding(false);
 
-    if (localStorage.getItem(address) !== "onboarded") {
-      setOnboarding(true);
-    } else {
+    const onboarded = JSON.parse(localStorage.getItem(address));
+
+    if (onboarded && onboarded[chainId]) {
       setOnboarding(false);
+    } else {
+      setOnboarding(true);
     }
-  }, [address]);
+  }, [address, chainId, appChainId]);
 
   useEffect(() => {
     async function handleChainChange() {
       const [_baseTokens, _poolFactory] = await Promise.all([
-        readBaseTokens(chainId),
-        PoolFactory.createInstance(chainId),
+        readBaseTokens(appChainId),
+        PoolFactory.createInstance(appChainId),
       ]);
 
       setBaseTokens(_baseTokens);
@@ -47,11 +49,11 @@ function App() {
     }
 
     handleChainChange();
-  }, [chainId]);
+  }, [appChainId]);
 
   return (
     <div className="app">
-      <NetworkOverlay
+      <AppNetworkOverlay
         switchingNetwork={switchingNetwork}
         setSwitchingNetwork={setSwitchingNetwork}
       />

@@ -2,15 +2,10 @@ import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import ConnectWalletBtn from "./ConnectWalletBtn";
 import spiralStakeLogo from "../assets/images/spiral-stake-logo.png";
-import { useChainId } from "wagmi";
-import dropdownSvg from "../assets/images/dropdown.svg";
-import { chainConfig } from "../config/chainConfig.js";
 
 const Navbar = ({ setSwitchingNetwork }) => {
   const location = useLocation();
   const { pathname } = location;
-
-  const chainId = useChainId();
 
   return (
     <nav className="navbar">
@@ -67,11 +62,11 @@ const Navbar = ({ setSwitchingNetwork }) => {
         </Link> */}
       </div>
       <div className="navbar__links">
-        <div onClick={() => setSwitchingNetwork(true)} className="navbar__network">
-          <img className="logo" src={chainConfig[chainId].logo} alt="" />
-          <img style={{ width: "25px" }} className="dropdown" src={dropdownSvg} alt="" />
-        </div>
-        <ConnectWalletBtn className="btn btn--connect" />
+        <ConnectWalletBtn
+          setSwitchingNetwork={setSwitchingNetwork}
+          networkOption={true}
+          className="btn btn--connect"
+        />
       </div>
     </nav>
   );

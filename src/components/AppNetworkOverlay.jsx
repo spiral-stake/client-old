@@ -1,25 +1,17 @@
 import "../styles/networkOverlay.css";
 import { chainConfig } from "../config/chainConfig";
 import closeIcon from "../assets/images/close.svg";
-import { toastError } from "../utils/toastWrapper";
-import { useSwitchChain } from "wagmi";
-import { addChainConfig } from "../config/addChainConfig";
+import { useChainId, useSwitchChain } from "wagmi";
 
-const NetworkOverlay = ({ switchingNetwork, setSwitchingNetwork }) => {
+const AppNetworkOverlay = ({ switchingNetwork, setSwitchingNetwork }) => {
   const chains = Object.values(chainConfig);
 
   const { switchChain } = useSwitchChain();
+  const appChainId = useChainId();
 
   const handleNetworkChange = async (chainId) => {
-    const chain = addChainConfig[chainId];
-
-    try {
-      switchChain({ chainId, addEthereumChainParameter: { ...chain } });
-    } catch (error) {
-      toastError(error.shortMessage);
-    } finally {
-      setSwitchingNetwork(false);
-    }
+    switchChain({ chainId });
+    setSwitchingNetwork(false);
   };
 
   return (
@@ -37,8 +29,13 @@ const NetworkOverlay = ({ switchingNetwork, setSwitchingNetwork }) => {
           </div>
           <div className="network-options">
             {chains.map((chain) => (
-              <div onClick={() => handleNetworkChange(chain.id)} className="network-option">
-                <img src={chain.logo} alt="Ethereum Mainnet" className="network-icon" />
+              <div
+                onClick={() => handleNetworkChange(chain.id)}
+                className={`network-option ${
+                  chain.id === appChainId && "network-option--selected"
+                } `}
+              >
+                <img src={chain.logo} className="network-icon" />
                 <span className="bold">{chain.name}</span>
               </div>
             ))}
@@ -49,4 +46,4 @@ const NetworkOverlay = ({ switchingNetwork, setSwitchingNetwork }) => {
   );
 };
 
-export default NetworkOverlay;
+export default AppNetworkOverlay;
