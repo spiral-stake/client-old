@@ -25,17 +25,17 @@ function App() {
 
   const { address, chainId } = useAccount();
 
-  useEffect(() => {
-    if (!address || chainId !== appChainId) return setOnboarding(false);
+  // useEffect(() => {
+  //   if (!address || chainId !== appChainId) return setOnboarding(false);
 
-    const onboarded = JSON.parse(localStorage.getItem(address));
+  //   const onboarded = JSON.parse(localStorage.getItem(address));
 
-    if (onboarded && onboarded[chainId]) {
-      setOnboarding(false);
-    } else {
-      setOnboarding(true);
-    }
-  }, [address, chainId, appChainId]);
+  //   if (onboarded && onboarded[chainId]) {
+  //     setOnboarding(false);
+  //   } else {
+  //     setOnboarding(true);
+  //   }
+  // }, [address, chainId, appChainId]);
 
   useEffect(() => {
     async function handleChainChange() {
