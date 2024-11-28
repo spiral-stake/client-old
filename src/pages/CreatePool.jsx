@@ -25,6 +25,7 @@ const CreatePool = ({ baseTokens, poolFactory, setSwitchingNetwork }) => {
 
   const [actionBtn, setActionBtn] = useState({ text: "", onClick: () => {}, disabled: false });
   const [loading, setLoading] = useState(false);
+  const [api, setApi] = useState("");
 
   const { address, chainId } = useAccount();
   const navigate = useNavigate();
@@ -34,6 +35,12 @@ const CreatePool = ({ baseTokens, poolFactory, setSwitchingNetwork }) => {
 
     setPool({ ...pool, baseToken: baseTokens[0] });
   }, [baseTokens]);
+
+  useEffect(() => {
+    if (!chainId) return;
+
+    setApi(chainConfig[chainId].api + "/schedule-pool-cronjob");
+  }, [chainId]);
 
   useEffect(() => {
     let {
@@ -69,7 +76,8 @@ const CreatePool = ({ baseTokens, poolFactory, setSwitchingNetwork }) => {
       disabled: false,
       text: "Create Spiral Pool",
       onClick: handleAsync(
-        () => handleCreatePool(baseToken, amountCycle, totalCycles, cycleDuration, startInterval),
+        () =>
+          handleCreatePool(api, baseToken, amountCycle, totalCycles, cycleDuration, startInterval),
         setLoading
       ),
     });
@@ -91,6 +99,7 @@ const CreatePool = ({ baseTokens, poolFactory, setSwitchingNetwork }) => {
   };
 
   const handleCreatePool = async (
+    api,
     baseToken,
     amountCycle,
     totalCycles,
@@ -105,7 +114,7 @@ const CreatePool = ({ baseTokens, poolFactory, setSwitchingNetwork }) => {
       startInterval
     );
 
-    await axios.post(chainConfig[chainId].api + "/schedule-pool-cronjob", { poolAddress });
+    await axios.post(api, { poolAddress });
     navigate(`/pools/${poolAddress}?baseToken=${baseToken.symbol}&poolChainId=${chainId}`);
   };
 

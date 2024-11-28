@@ -56,9 +56,9 @@ const fraxtalTestnet = defineChain({
     },
   },
   logo: "/logo/frax-logo.svg",
-  api: "http://localhost:5000",
+  api: "https://api.spiralstake.xyz",
   onboard: {
-    amountNative: "0.00001",
+    amountNative: "0.0001",
   },
 });
 

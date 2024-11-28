@@ -4,7 +4,7 @@ export const readBaseTokens = async (chainId) => {
   const baseTokens = [];
 
   for (let baseTokenObj of Object.values(baseTokensObj)) {
-    baseTokens.push({
+    baseTokens.unshift({
       address: baseTokenObj.address,
       name: baseTokenObj.name,
       symbol: baseTokenObj.symbol === "wETH" ? "ETH" : baseTokenObj.symbol,
