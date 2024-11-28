@@ -14,6 +14,7 @@ import { useAccount, useChainId } from "wagmi";
 import { readBaseTokens } from "./config/contractsData.js";
 import PoolFactory from "./contract-hooks/PoolFactory.js";
 import OnboardingOverlay from "./components/OnboardingOverlay.jsx";
+import ERC20 from "./contract-hooks/ERC20.js";
 
 function App() {
   const [baseTokens, setBaseTokens] = useState([]);
@@ -26,16 +27,23 @@ function App() {
   const { address, chainId } = useAccount();
 
   useEffect(() => {
-    if (!address || chainId !== appChainId) return setOnboarding(false);
+    const onboardUser = async () => {
+      if (!address || chainId !== appChainId || !baseTokens.length) return setOnboarding(false);
 
-    const onboarded = JSON.parse(localStorage.getItem(address));
+      const { address: tokenAddress, name, symbol, decimals } = baseTokens[0];
 
-    if (onboarded && onboarded[chainId]) {
-      setOnboarding(false);
-    } else {
-      setOnboarding(true);
-    }
-  }, [address, chainId, appChainId]);
+      const baseToken = new ERC20(tokenAddress, name, symbol, decimals);
+      const baseTokenBalance = await baseToken.balanceOf(address);
+
+      if (baseTokenBalance.isZero()) {
+        setOnboarding(true);
+      } else {
+        setOnboarding(false);
+      }
+    };
+
+    onboardUser();
+  }, [address, chainId, appChainId, baseTokens]);
 
   useEffect(() => {
     async function handleChainChange() {
