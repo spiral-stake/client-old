@@ -206,6 +206,7 @@ const PoolPage = () => {
                 pool={pool}
                 currentCycle={currentCycle}
                 position={position}
+                setLoading={setLoading}
               />
             )}
             <PoolInfo pool={pool} />

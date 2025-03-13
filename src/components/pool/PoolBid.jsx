@@ -4,9 +4,8 @@ import { handleAsync } from "../../utils/handleAsyncFunction";
 import ConnectWalletBtn from "../ConnectWalletBtn";
 import { displayAmount } from "../../utils/displayAmounts";
 
-const PoolBid = ({ pool, poolChainId, currentCycle, position }) => {
+const PoolBid = ({ pool, poolChainId, currentCycle, position, setLoading }) => {
   const [amountBid, setAmountBid] = useState("");
-  const [loading, setLoading] = useState(false);
   const [lowestBid, setLowestBid] = useState({});
   const [actionBtn, setActionBtn] = useState({ text: "", onClick: () => {}, disabled: false });
   const [isCycleDepositAndBidOpen, setIsCycleDepositAndBidOpen] = useState();
