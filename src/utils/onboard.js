@@ -3,8 +3,8 @@ import { chainConfig } from "../config/chainConfig";
 import { getTokens } from "./getTokens";
 import { addTokenToWallet } from "./addTokensToWallet";
 
-const amountYbt = "21";
-const amountBase = "21";
+const amountYbt = "100";
+const amountBase = "100";
 
 export const onboard = async (chainId, userAddress) => {
   const amountNative = chainConfig[chainId].onboard.amountNative;
