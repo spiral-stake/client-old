@@ -12,12 +12,12 @@ const PoolContribute = ({
 }) => {
   const [userBaseTokenBalance, setUserBaseTokenBalance] = useState();
   const [userBaseTokenAllowance, setUserBaseTokenAllowance] = useState();
-  const [isCycleDepositWindowOpen, setIsCycleDepositWindowOpen] = useState();
+  const [isCycleDepositAndBidOpen, setIsCycleDepositAndBidOpen] = useState();
 
   const { address } = useAccount();
 
   useEffect(() => {
-    setIsCycleDepositWindowOpen(pool.calcIsCycleDepositWindowOpen(currentCycle));
+    setIsCycleDepositAndBidOpen(pool.calcIsCycleDepositAndBidWindowOpen(currentCycle));
   }, [currentCycle]);
 
   useEffect(() => {
@@ -43,9 +43,9 @@ const PoolContribute = ({
         });
       }
 
-      if (!isCycleDepositWindowOpen) {
+      if (!isCycleDepositAndBidOpen) {
         return setActionBtn({
-          text: "Cycle Deposit Window Closed",
+          text: "Cycle Deposit & Bid Window Closed",
           disabled: true,
         });
       }

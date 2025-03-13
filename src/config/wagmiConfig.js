@@ -1,5 +1,5 @@
 import { http } from "wagmi";
-import { mainnet, bsc, bscTestnet, sepolia, anvil, arbitrumSepolia } from "wagmi/chains";
+import { mainnet, bsc, bscTestnet, sepolia, anvil, arbitrumSepolia, mode } from "wagmi/chains";
 import { chainConfig } from "../config/chainConfig";
 import { getDefaultConfig } from "@rainbow-me/rainbowkit";
 

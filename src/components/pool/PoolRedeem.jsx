@@ -37,13 +37,13 @@ const PoolRedeem = ({ pool, state, position, updatePosition, setActionBtn, setLo
 
         if (_amountCollateralYield?.isGreaterThan(0)) {
           setActionBtn({
-            text: `Redeem YBT Yield`,
+            text: `Claim YBT Yield`,
             disabled: false,
-            onClick: handleAsync(handleRedeemYield, setLoading),
+            onClick: handleAsync(handleClaimYield, setLoading),
           });
         } else {
           setActionBtn({
-            text: `Redeemed YBT Yield`,
+            text: `Claimed YBT Yield`,
             disabled: true,
           });
         }
@@ -53,8 +53,8 @@ const PoolRedeem = ({ pool, state, position, updatePosition, setActionBtn, setLo
     updatingActionBtn();
   }, [position, state, setActionBtn]);
 
-  const handleRedeemYield = async () => {
-    await pool.redeemCollateralYield(position.id);
+  const handleClaimYield = async () => {
+    await pool.claimCollateralYield(position.id);
 
     await updatePosition(position.id);
   };

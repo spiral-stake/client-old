@@ -1,48 +1,66 @@
 {
-  "YBTs": {
-    "sfrxETH": "0xB7047342ED8D3e13B6396D6841c0E5591f436843",
-    "stETH": "0xcadD041564407fc42DbCEC721A9E98F22C0895F4",
-    "swETH": "0xE1143aB2057355E75f2675ED3fDC70e0E4ba2713"
-  },
-  "baseTokens": {
-    "frxETH": {
-      "YBTs": {
-        "sfrxETH": {
-          "address": "0xB7047342ED8D3e13B6396D6841c0E5591f436843",
-          "decimals": "18",
-          "name": "Staked Frax Ether",
-          "syAddress": "0x3458E5CFEea08b266845a2Bc81e4C742cf6Dd5C3",
-          "symbol": "sfrxETH"
-        }
-      },
-      "address": "0x45e9EC398905153ebDAb4a9CC9d1FE4a52F3D15b",
+  "spiralPoolFactory": "0x84f20D96D6981F53b214360b3D78ba874904Ce99",
+  "spiralPoolRouter": "0x0000000000000000000000000000000000000000",
+  "ybts": {
+    "rETH": {
+      "address": "0x0b69dbFb5618cbE2FEFac32333D5751a11281b69",
       "decimals": "18",
-      "name": "Frax Ether",
-      "symbol": "frxETH"
-    },
-    "wETH": {
-      "YBTs": {
-        "stETH": {
-          "address": "0xcadD041564407fc42DbCEC721A9E98F22C0895F4",
+      "name": "Rocket ETH",
+      "relatedTokens": {
+        "baseToken": {
+          "address": "0xd226a866d2aB50fc6A72aa9959019c80C7D55Dc3",
           "decimals": "18",
-          "name": "Lido Staked Ether",
-          "syAddress": "0xEfEA6B5573a201F49d916E593EA383c5497F4D76",
-          "symbol": "stETH"
+          "name": "Wrapped Ether",
+          "symbol": "wETH"
         },
-        "swETH": {
-          "address": "0xE1143aB2057355E75f2675ED3fDC70e0E4ba2713",
+        "syToken": {
+          "address": "0xa71Fc5e0A4B39f73e765b2bbF28fEB650357094f",
           "decimals": "18",
-          "name": "Swell Staked Ether",
-          "syAddress": "0xAC7508231e69EcB1A07a5F5449685E550C0F6654",
-          "symbol": "swETH"
+          "name": "SY Swell swETH",
+          "symbol": "SY-swETH"
         }
       },
-      "address": "0xF0ab63fc91DdD6c9Bb846A7Ba860E6BA1513e1B6",
+      "symbol": "rETH"
+    },
+    "stETH": {
+      "address": "0x37C3348Af6Ef29164Dc08504c2958Ce4Df9D23Ef",
       "decimals": "18",
-      "name": "Wrapped Ether",
-      "symbol": "wETH"
+      "name": "Lido Staked Ether",
+      "relatedTokens": {
+        "baseToken": {
+          "address": "0xd226a866d2aB50fc6A72aa9959019c80C7D55Dc3",
+          "decimals": "18",
+          "name": "Wrapped Ether",
+          "symbol": "wETH"
+        },
+        "syToken": {
+          "address": "0x2B5cAAfa57F08c901C3A87eE5F36a214bB3D2411",
+          "decimals": "18",
+          "name": "SY Lido stETH",
+          "symbol": "SY-stETH"
+        }
+      },
+      "symbol": "stETH"
+    },
+    "swETH": {
+      "address": "0x1e05462cDbA0f1785e4239E60D5E65466a69b308",
+      "decimals": "18",
+      "name": "Swell Staked Ether",
+      "relatedTokens": {
+        "baseToken": {
+          "address": "0xd226a866d2aB50fc6A72aa9959019c80C7D55Dc3",
+          "decimals": "18",
+          "name": "Wrapped Ether",
+          "symbol": "wETH"
+        },
+        "syToken": {
+          "address": "0x18804B4a5144EA376E2Cc53af9e06040e8b6a7EC",
+          "decimals": "18",
+          "name": "SY Swell swETH",
+          "symbol": "SY-swETH"
+        }
+      },
+      "symbol": "swETH"
     }
-  },
-  "spiralPoolFactory": "0x5b9a23075388a62450981D03e92a0d52ce782256",
-  "spiralPoolRouter": "0x0000000000000000000000000000000000000000"
+  }
 }

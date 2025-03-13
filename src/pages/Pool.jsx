@@ -13,6 +13,7 @@ import LoadingOverlay from "../components/LoadingOverlay.jsx";
 import { chainConfig } from "../config/chainConfig.js";
 import Loader from "../components/Loader.jsx";
 import Skeleton from "react-loading-skeleton";
+import PoolBid from "../components/pool/PoolBid.jsx";
 
 const PoolPage = () => {
   const [pool, setPool] = useState();
@@ -33,12 +34,12 @@ const PoolPage = () => {
   const { address, chainId } = useAccount();
   const { switchChain } = useSwitchChain();
   const { address: poolAddress } = useParams();
-  const baseTokenSymbol = useSearchParams()[0].get("baseToken");
+  const ybtSymbol = useSearchParams()[0].get("ybt");
   const poolChainId = parseInt(useSearchParams()[0].get("poolChainId"));
 
   useEffect(() => {
     async function getPool() {
-      const _pool = await Pool.createInstance(poolAddress, poolChainId, baseTokenSymbol);
+      const _pool = await Pool.createInstance(poolAddress, poolChainId, ybtSymbol);
 
       setPool(_pool);
 
@@ -174,7 +175,6 @@ const PoolPage = () => {
                 {state === undefined && <Skeleton width={100} baseColor="var(--color-secondary)" />}
               </>
             </div>
-
             <div className="pool__interface">
               {/* {position && `Your Position Id: ${position.id}`} */}
               {renderPoolInterface()}
@@ -200,6 +200,14 @@ const PoolPage = () => {
                 <ConnectWalletBtn className="btn btn--primary" />
               )}
             </div>
+            {pool.calcIsCycleDepositAndBidWindowOpen(currentCycle) && (
+              <PoolBid
+                poolChainId={poolChainId}
+                pool={pool}
+                currentCycle={currentCycle}
+                position={position}
+              />
+            )}
             <PoolInfo pool={pool} />
           </div>
         </div>

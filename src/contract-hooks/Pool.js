@@ -1,7 +1,7 @@
 import { Base } from "./Base";
 import { abi as POOL_ABI } from "../abi/SpiralPool.sol/SpiralPool.json";
-import { formatUnits } from "../utils/formatUnits";
-import { readBaseToken } from "../config/contractsData";
+import { formatUnits, parseUnits } from "../utils/formatUnits";
+import { readYbt } from "../config/contractsData";
 import ERC20 from "./ERC20";
 
 export default class Pool extends Base {
@@ -9,45 +9,47 @@ export default class Pool extends Base {
     super(address, POOL_ABI);
   }
 
-  static async createInstance(address, chainId, baseTokenSymbol) {
+  static async createInstance(address, chainId, ybtSymbol) {
     const instance = new Pool(address);
     instance.chainId = chainId;
 
-    if (baseTokenSymbol) {
-      const baseTokenData = await readBaseToken(chainId, baseTokenSymbol);
-      const collateralTokensData = baseTokenData.ybts;
+    if (ybtSymbol) {
+      const ybt = await readYbt(chainId, ybtSymbol);
+      const { baseToken, syToken } = ybt;
 
-      const { address: tokenAddress, name, symbol, decimals } = baseTokenData;
-      const baseToken = new ERC20(tokenAddress, name, symbol, decimals);
-      const collateralTokens = instance.formatCollateralTokens(collateralTokensData);
-
-      instance.baseToken = baseToken;
-      instance.collateralTokens = collateralTokens;
+      instance.baseToken = new ERC20(
+        baseToken.address,
+        baseToken.name,
+        baseToken.symbol,
+        baseToken.decimals
+      );
+      instance.ybt = new ERC20(ybt.address, ybt.name, ybt.symbol, ybt.decimals);
+      instance.syToken = new ERC20(syToken.address, syToken.name, syToken.symbol, syToken.decimals);
     }
 
     const [
       amountCycle,
       amountCollateralInBase,
       cycleDuration,
-      cycleDepositDuration,
+      cycleDepositAndBidDuration,
       totalCycles,
       startTime,
     ] = await Promise.all([
       instance.read("getamountCycle", [], chainId),
       instance.read("getAmountCollateralInBase", [], chainId),
       instance.read("getCycleDuration", [], chainId),
-      instance.read("getCycleDepositDuration", [], chainId),
+      instance.read("getCycleDepositAndBidDuration", [], chainId),
       instance.read("getTotalCycles", [], chainId),
       instance.read("getStartTime", [], chainId),
-      instance.getPositionsFilled(),
-      instance.getCyclesFinalized(),
+      // instance.getPositionsFilled(),
+      // instance.getCyclesFinalized(),
     ]);
 
     instance.address = instance.address;
     instance.amountCycle = formatUnits(amountCycle);
     instance.amountCollateralInBase = formatUnits(amountCollateralInBase);
     instance.cycleDuration = parseInt(cycleDuration);
-    instance.cycleDepositDuration = parseInt(cycleDepositDuration);
+    instance.cycleDepositAndBidDuration = parseInt(cycleDepositAndBidDuration);
     instance.totalCycles = parseInt(totalCycles);
     instance.totalPositions = parseInt(totalCycles);
     instance.startTime = parseInt(startTime);
@@ -56,16 +58,24 @@ export default class Pool extends Base {
     return instance;
   }
 
-  async depositYbtCollateral(syCollateralTokenAddress, receiver) {
-    return this.write("depositYbtCollateral", [syCollateralTokenAddress, receiver]);
+  async depositYbtCollateral(receiver) {
+    return this.write("depositYbtCollateral", [receiver]);
   }
 
   async depositCycle(positionId) {
     return this.write("depositCycle", [positionId]);
   }
 
-  async redeemCollateralYield(positionId) {
-    return this.write("redeemCollateralYield", [positionId]);
+  async bidCycle(positionId, bidAmount) {
+    return this.write("bidCycle", [positionId, parseUnits(bidAmount, this.baseToken.decimals)]);
+  }
+
+  async claimCollateralYield(positionId) {
+    return this.write("claimCollateralYield", [positionId]);
+  }
+
+  async claimSpiralYield(positionId) {
+    return this.write("claimSpiralYield", [positionId]);
   }
 
   async redeemCollateralIfDiscarded(positionId) {
@@ -80,13 +90,9 @@ export default class Pool extends Base {
     return parseInt(await this.read("getCyclesFinalized", [], this.chainId));
   }
 
-  async getAmountCollateral(collateralToken) {
-    const amountCollateral = await this.read(
-      "getAmountCollateral",
-      [collateralToken.syAddress],
-      this.chainId
-    );
-    return formatUnits(amountCollateral, collateralToken.decimals);
+  async getAmountCollateral() {
+    const amountCollateral = await this.read("getAmountCollateral", [], this.chainId);
+    return formatUnits(amountCollateral, this.ybt.decimals);
   }
 
   async getAllPositions() {
@@ -101,14 +107,9 @@ export default class Pool extends Base {
       this.read("ownerOf", [positionId], this.chainId),
     ]);
 
-    const collateralToken = this.collateralTokens.find(
-      (collateralToken) => collateralToken.syAddress === position.syCollateralToken
-    );
-
     position.id = positionId;
     position.owner = owner;
-    position.collateralToken = collateralToken;
-    position.amountCollateral = formatUnits(position.amountCollateral);
+    position.amountCollateral = formatUnits(position.amountCollateral, this.ybt.decimals);
     position.winningCycle = parseInt(position.winningCycle);
 
     return position;
@@ -120,7 +121,33 @@ export default class Pool extends Base {
       [position.id],
       this.chainId
     );
-    return formatUnits(amountCollateralYield, position.collateralToken.decimals);
+    return formatUnits(amountCollateralYield, this.ybt.decimals);
+  }
+
+  async getSpiralYield(position) {
+    const { amountBase, amountSY: amountYbt } = await this.read(
+      "getSpiralYield",
+      [position.id],
+      this.chainId
+    );
+
+    return {
+      amountBase: formatUnits(amountBase, this.ybt.decimals),
+      amountYbt: formatUnits(amountYbt, this.ybt.decimals),
+    };
+  }
+
+  async getLowestBid() {
+    const { positionId, amount } = await this.read(
+      "getLowestBid",
+      [this.calcCurrentCycle()],
+      this.chainId
+    );
+
+    return {
+      positionId: parseInt(positionId),
+      amount: formatUnits(amount, this.baseToken.decimals),
+    };
   }
 
   currentTimestamp() {
@@ -147,26 +174,13 @@ export default class Pool extends Base {
     return currentCycle;
   }
 
-  calcIsCycleDepositWindowOpen(currentCycle) {
+  calcIsCycleDepositAndBidWindowOpen(currentCycle) {
     const timestamp = this.currentTimestamp();
 
     const currentCycleStartTime = this.startTime + (currentCycle - 1) * this.cycleDuration;
-    const currentCycleDepositEndTime = currentCycleStartTime + this.cycleDepositDuration; // cycleDepositDuration can be calculated here only
+    const currentCycleDepositAndBidEndTime =
+      currentCycleStartTime + this.cycleDepositAndBidDuration; // cycleDepositAndBidDuration can be calculated here only
 
-    return timestamp >= currentCycleStartTime && timestamp <= currentCycleDepositEndTime;
+    return timestamp >= currentCycleStartTime && timestamp <= currentCycleDepositAndBidEndTime;
   }
-
-  formatCollateralTokens = (collateralTokensData) => {
-    const collateralTokens = [];
-
-    collateralTokensData.forEach((tokenData, index) => {
-      const { address, name, symbol, decimals, syAddress } = tokenData;
-      const _collateralToken = new ERC20(address, name, symbol, decimals);
-      _collateralToken.syAddress = syAddress;
-      _collateralToken.index = index; // Add index to each token
-      collateralTokens.push(_collateralToken);
-    });
-
-    return collateralTokens;
-  };
 }

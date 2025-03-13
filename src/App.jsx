@@ -1,6 +1,5 @@
 import { Toaster } from "react-hot-toast";
 import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
-import Home from "./pages/Home.jsx";
 import Pools from "./pages/Pools.jsx";
 import PoolPage from "./pages/Pool.jsx";
 import Navbar from "./components/Navbar";
@@ -11,31 +10,30 @@ import Dashboard from "./pages/Dashboard.jsx";
 import { useEffect, useState } from "react";
 import AppNetworkOverlay from "./components/AppNetworkOverlay.jsx";
 import { useAccount, useChainId } from "wagmi";
-import { readBaseTokens } from "./config/contractsData.js";
+import { readYbts } from "./config/contractsData.js";
 import PoolFactory from "./contract-hooks/PoolFactory.js";
 import OnboardingOverlay from "./components/OnboardingOverlay.jsx";
 import ERC20 from "./contract-hooks/ERC20.js";
 
 function App() {
-  const [baseTokens, setBaseTokens] = useState([]);
+  const [ybts, setYbts] = useState([]);
   const [poolFactory, setPoolFactory] = useState();
   const [switchingNetwork, setSwitchingNetwork] = useState(false);
   const [onboarding, setOnboarding] = useState();
 
   const appChainId = useChainId();
-
   const { address, chainId } = useAccount();
 
   useEffect(() => {
     const onboardUser = async () => {
-      if (!address || chainId !== appChainId || !baseTokens.length) return setOnboarding(false);
+      if (!address || chainId !== appChainId || !ybts.length) return setOnboarding(false);
 
-      const { address: tokenAddress, name, symbol, decimals } = baseTokens[0];
+      const { address: tokenAddress, name, symbol, decimals } = ybts[0];
 
-      const baseToken = new ERC20(tokenAddress, name, symbol, decimals);
-      const baseTokenBalance = await baseToken.balanceOf(address);
+      const ybt = new ERC20(tokenAddress, name, symbol, decimals);
+      const ybtBalance = await ybt.balanceOf(address);
 
-      if (baseTokenBalance.isZero()) {
+      if (ybtBalance.isZero()) {
         setOnboarding(true);
       } else {
         setOnboarding(false);
@@ -43,16 +41,16 @@ function App() {
     };
 
     onboardUser();
-  }, [address, chainId, appChainId, baseTokens]);
+  }, [address, chainId, appChainId, ybts]);
 
   useEffect(() => {
     async function handleChainChange() {
-      const [_baseTokens, _poolFactory] = await Promise.all([
-        readBaseTokens(appChainId),
+      const [_ybts, _poolFactory] = await Promise.all([
+        readYbts(appChainId),
         PoolFactory.createInstance(appChainId),
       ]);
 
-      setBaseTokens(_baseTokens);
+      setYbts(_ybts);
       setPoolFactory(_poolFactory);
     }
 
@@ -74,16 +72,13 @@ function App() {
             element={
               <CreatePool
                 poolFactory={poolFactory}
-                baseTokens={baseTokens}
+                ybts={ybts}
                 setSwitchingNetwork={setSwitchingNetwork}
               />
             }
           />
           <Route path={"/pools/:address"} element={<PoolPage />} />
-          <Route
-            path={"/pools"}
-            element={<Pools baseTokens={baseTokens} poolFactory={poolFactory} />}
-          />
+          <Route path={"/pools"} element={<Pools ybts={ybts} poolFactory={poolFactory} />} />
           <Route path={"/marketplace"} element={<Market />} />
           <Route path="dashboard" element={<Dashboard />} />
           {/* <Route path={"/"} element={<Home />} /> */}

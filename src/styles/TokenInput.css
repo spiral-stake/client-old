@@ -1,5 +1,17 @@
 /* Token Inputs */
 
+.token {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background-color: var(--color-primary-light);
+  border-radius: var(--btn-border-radius);
+  font-size: 16px;
+  color: var(--color-text);
+}
+
 .token-input__container {
   width: 100%;
 }

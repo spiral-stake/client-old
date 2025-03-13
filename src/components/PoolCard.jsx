@@ -9,7 +9,7 @@ import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import { useChainId } from "wagmi";
 import { displayAmount } from "../utils/displayAmounts";
 
-const PoolCard = ({ poolAddress, baseToken }) => {
+const PoolCard = ({ poolAddress, ybt }) => {
   const [pool, setPool] = useState();
   const [state, setState] = useState();
   const [currentCycle, setCycle] = useState();
@@ -53,10 +53,12 @@ const PoolCard = ({ poolAddress, baseToken }) => {
           <div className="cryLogo">
             <img src={token} />
             <div>
-              <h3>{baseToken.symbol}</h3>
+              <h3>{ybt.symbol}</h3>
               <h4 style={{ color: "#dba501" }}>
                 {pool ? (
-                  `Win = ${displayAmount(pool.amountCollateralInBase)} ${baseToken.symbol}`
+                  `Bid = ${displayAmount(pool.amountCollateralInBase)} ${
+                    ybt.baseToken.symbol === "wETH" ? "ETH" : ybt.baseToken.symbol
+                  }`
                 ) : (
                   <Skeleton />
                 )}
@@ -108,7 +110,9 @@ const PoolCard = ({ poolAddress, baseToken }) => {
                 {pool ? (
                   <>
                     ~ {displayAmount(pool.amountCollateralInBase, 2)}{" "}
-                    <small className="mx-1">{baseToken.symbol}</small>
+                    <small className="mx-1">
+                      {ybt.baseToken.symbol === "wETH" ? "ETH" : ybt.baseToken.symbol}
+                    </small>
                   </>
                 ) : (
                   <Skeleton />
@@ -121,7 +125,9 @@ const PoolCard = ({ poolAddress, baseToken }) => {
                 {pool ? (
                   <>
                     {displayAmount(pool.amountCycle, 2)}{" "}
-                    <small className="mx-1">{baseToken.symbol}</small>
+                    <small className="mx-1">
+                      {ybt.baseToken.symbol === "wETH" ? "ETH" : ybt.baseToken.symbol}
+                    </small>
                   </>
                 ) : (
                   <Skeleton />
@@ -163,9 +169,7 @@ const PoolCard = ({ poolAddress, baseToken }) => {
               <img style={{ width: "25px", margin: "0 5px" }} src="/images/key.svg" alt="" />
             )}
             {pool ? (
-              <Link
-                to={`/pools/${pool.address}?baseToken=${baseToken.symbol}&poolChainId=${poolChainId}`}
-              >
+              <Link to={`/pools/${pool.address}?ybt=${ybt.symbol}&poolChainId=${poolChainId}`}>
                 <a className="btn btn--primary btn--view">
                   view <img src={arrow} />
                 </a>

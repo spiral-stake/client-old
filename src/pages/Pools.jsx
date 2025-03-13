@@ -1,63 +1,63 @@
 import { useEffect, useState } from "react";
 import PoolCard from "../components/PoolCard";
 import "../styles/pools.css";
-import { readBaseToken, readBaseTokens } from "../config/contractsData";
+import { readYbt } from "../config/contractsData";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useChainId } from "wagmi";
 import Loader from "../components/Loader";
 
-const Pools = ({ baseTokens, poolFactory }) => {
-  const [baseToken, setBaseToken] = useState();
+const Pools = ({ ybts, poolFactory }) => {
+  const [ybt, setYbt] = useState();
   const [poolAddresses, setPoolAddresses] = useState();
 
   const navigate = useNavigate();
   const appChainId = useChainId();
-  const baseTokenSymbol = useSearchParams()[0].get("baseToken");
+  const ybtSymbol = useSearchParams()[0].get("ybt");
 
   useEffect(() => {
-    setBaseToken(undefined);
+    setYbt(undefined);
 
-    async function initializeBaseToken() {
-      if (baseTokenSymbol) {
-        const _baseToken = await readBaseToken(appChainId, baseTokenSymbol);
-        return setBaseToken(_baseToken);
+    async function initializeYbt() {
+      if (ybtSymbol) {
+        const _ybt = await readYbt(appChainId, ybtSymbol);
+        return setYbt(_ybt);
       }
-      return setBaseToken(baseTokens[0]);
+      return setYbt(ybts[0]);
     }
 
-    initializeBaseToken();
-  }, [baseTokens]);
+    initializeYbt();
+  }, [ybts]);
 
   useEffect(() => {
-    if (!baseToken || !poolFactory) return;
+    if (!ybt || !poolFactory) return;
 
     setPoolAddresses(undefined);
 
     const fetchPoolAddresses = async () => {
-      const _poolAddresses = await poolFactory.getPoolsForBaseToken(baseToken.address);
+      const _poolAddresses = await poolFactory.getSpiralPoolsForSYToken(ybt.syToken);
       setPoolAddresses(_poolAddresses);
     };
 
     fetchPoolAddresses();
-  }, [baseToken, poolFactory]);
+  }, [ybt, poolFactory]);
 
-  const handleBaseTokenChange = (token) => {
-    setBaseToken(token);
-    const newUrl = `/pools?baseToken=${token.symbol}  `;
+  const handleYbtChange = (token) => {
+    setYbt(token);
+    const newUrl = `/pools?ybt=${token.symbol}  `;
     navigate(newUrl, { replace: true });
   };
 
   return (
     <div className="pools">
       <div className="pools__select-box">
-        {baseTokens.map((token, index) => (
+        {ybts.map((token, index) => (
           <div key={index} style={{ display: "inline-block", marginRight: "8px" }}>
-            {baseToken ? (
+            {ybt ? (
               <button
-                onClick={() => handleBaseTokenChange(token)}
-                className={token.address === baseToken.address ? "btn btn--selected" : "btn"}
+                onClick={() => handleYbtChange(token)}
+                className={token.address === ybt.address ? "btn btn--selected" : "btn"}
               >
                 {token.symbol === "wETH" ? "ETH" : token.symbol}
               </button>
@@ -76,7 +76,7 @@ const Pools = ({ baseTokens, poolFactory }) => {
       {poolAddresses ? (
         <div className="pools__list">
           {poolAddresses.map((poolAddress, index) => (
-            <PoolCard key={index} poolAddress={poolAddress} baseToken={baseToken} />
+            <PoolCard key={index} poolAddress={poolAddress} ybt={ybt} />
           ))}
         </div>
       ) : (

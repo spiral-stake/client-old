@@ -16,11 +16,20 @@ export default class PoolFactory extends Base {
   // WRITE FUNCTIONS
   /////////////////////////
 
-  async createSpiralPool(baseToken, amountCycle, totalCycles, cycleDuration, startInterval) {
+  async createSpiralPool(
+    syToken,
+    baseToken,
+    amountCycle,
+    totalCycles,
+    cycleDuration,
+    cycleDepositAndBidDuration,
+    startInterval
+  ) {
     const receipt = await this.write("createSpiralPool", [
-      baseToken.address,
+      syToken.address,
       parseUnits(amountCycle, baseToken.decimals),
       cycleDuration,
+      cycleDepositAndBidDuration,
       totalCycles,
       startInterval,
     ]);
@@ -34,12 +43,8 @@ export default class PoolFactory extends Base {
   // READ FUNCTIONS
   /////////////////////////
 
-  async getSyTokensForBaseToken(baseTokenAddress) {
-    return this.read("getValidSYCollateralTokensForBaseToken", [baseTokenAddress]);
-  }
-
-  async getPoolsForBaseToken(baseTokenAddress) {
-    const pools = await this.read("getSpiralPoolsForBaseToken", [baseTokenAddress]);
+  async getSpiralPoolsForSYToken(syToken) {
+    const pools = await this.read("getSpiralPoolsForSYToken", [syToken.address]);
     return pools.reverse();
   }
 }

@@ -1,37 +1,16 @@
-export const readBaseTokens = async (chainId) => {
-  const { baseTokens: baseTokensObj } = await import(`../addresses/${chainId}.json`);
+export const readYbts = async (chainId) => {
+  const { ybts: ybtsObj } = await import(`../addresses/${chainId}.json`);
 
-  const baseTokens = [];
+  const ybtData = [];
 
-  for (let baseTokenObj of Object.values(baseTokensObj)) {
-    baseTokens.unshift({
-      address: baseTokenObj.address,
-      name: baseTokenObj.name,
-      symbol: baseTokenObj.symbol === "wETH" ? "ETH" : baseTokenObj.symbol,
-      decimals: baseTokenObj.decimals,
-    });
+  for (let ybt of Object.values(ybtsObj)) {
+    ybtData.unshift({ ...ybt });
   }
 
-  return baseTokens;
+  return ybtData;
 };
 
-export const readBaseToken = async (chainId, baseTokenSymbol) => {
-  const { baseTokens: baseTokensObj } = await import(`../addresses/${chainId}.json`);
-
-  if (baseTokenSymbol === "ETH") baseTokenSymbol = "wETH";
-
-  const baseTokenObj = baseTokensObj[baseTokenSymbol];
-
-  const ybts = [];
-  for (let ybtObj of Object.values(baseTokenObj.YBTs)) {
-    ybts.push({ ...ybtObj });
-  }
-
-  return {
-    address: baseTokenObj.address,
-    name: baseTokenObj.name,
-    symbol: baseTokenObj.symbol === "wETH" ? "ETH" : baseTokenObj.symbol,
-    decimals: baseTokenObj.decimals,
-    ybts,
-  };
+export const readYbt = async (chainId, ybtSymbol) => {
+  const { ybts: ybtsObj } = await import(`../addresses/${chainId}.json`);
+  return { ...ybtsObj[ybtSymbol] };
 };

@@ -53,8 +53,10 @@ const Input = ({
         />
         {select && (
           <select name={selectName} onChange={selectOnChange} value={selectValue} id="">
-            {selectOptions.map((option) => (
-              <option value={option}>{option}</option>
+            {selectOptions.map((option, index) => (
+              <option key={index} value={option}>
+                {option}
+              </option>
             ))}
           </select>
         )}

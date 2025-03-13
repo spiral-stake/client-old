@@ -49,10 +49,10 @@ const PoolInfo = ({ pool }) => {
         </li>
 
         <li>
-          <small>Deposit Window</small>
+          <small>Deposit & Bid Window</small>
           <h3>
-            {pool ? formatTime(pool.cycleDepositDuration).value : <Skeleton />}{" "}
-            <small className="mx-1">{formatTime(pool.cycleDepositDuration).unit} </small>{" "}
+            {pool ? formatTime(pool.cycleDepositAndBidDuration).value : <Skeleton />}{" "}
+            <small className="mx-1">{formatTime(pool.cycleDepositAndBidDuration).unit} </small>{" "}
           </h3>
         </li>
 

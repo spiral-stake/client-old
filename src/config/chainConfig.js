@@ -56,7 +56,7 @@ const fraxtalTestnet = defineChain({
     },
   },
   logo: "/logo/frax-logo.svg",
-  api: "https://api.spiralstake.xyz",
+  api: "https://api.spiralstake.xyz", // Needs to change at production
   onboard: {
     amountNative: "0.0001",
   },
@@ -90,7 +90,7 @@ const arbitrumTestnet = defineChain({
   },
   testnet: true,
   logo: "/logo/arb-logo.png",
-  api: "https://api.spiralstake.xyz",
+  api: "https://api.spiralstake.xyz", // Needs to change at production
   onboard: {
     amountNative: "0.001",
   },
@@ -121,6 +121,6 @@ export const chainConfig = {
   // 31337: fraxtalLocal,
   // 31338: arbitrumLocal,
   2522: fraxtalTestnet,
-  // 421614: arbitrumTestnet,
+  421614: arbitrumTestnet,
   // 89346162: reyaTestnet,
 };
