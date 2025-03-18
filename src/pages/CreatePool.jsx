@@ -11,6 +11,7 @@ import LoadingOverlay from "../components/LoadingOverlay";
 import { chainConfig } from "../config/chainConfig";
 import "../styles/createPool.css";
 import { parseTime } from "../utils/time";
+import { toastSuccess } from "../utils/toastWrapper";
 
 const CreatePool = ({ ybts, poolFactory, setSwitchingNetwork }) => {
   const [pool, setPool] = useState({
@@ -68,10 +69,10 @@ const CreatePool = ({ ybts, poolFactory, setSwitchingNetwork }) => {
     const errors = [
       { condition: !amountCycle, text: "Invalid Cycle Amount" },
       { condition: totalCycles < 2, text: "Invalid Total Cycles" },
-      { condition: cycleDuration < 420, text: "Cycle duration too low" },
-      { condition: startInterval < 120, text: "Start interval too low" },
+      { condition: cycleDuration < 120, text: "Cycle duration too low" },
+      { condition: startInterval < 60, text: "Start interval too low" },
       {
-        condition: cycleDepositAndBidDuration < 1,
+        condition: cycleDepositAndBidDuration < 60,
         text: "Invalid Pool Deposit and Bid duration",
       },
     ];
@@ -140,6 +141,7 @@ const CreatePool = ({ ybts, poolFactory, setSwitchingNetwork }) => {
     );
 
     await axios.post(api, { poolAddress });
+    toastSuccess("Spiral Pool created successfully");
     navigate(`/pools/${poolAddress}?ybt=${ybt.symbol}&poolChainId=${chainId}`);
   };
 
@@ -181,7 +183,7 @@ const CreatePool = ({ ybts, poolFactory, setSwitchingNetwork }) => {
           </div>
           <div>
             <Input
-              label={"Cycle Duration >= 7 mins"}
+              label={"Cycle Duration >= 2 mins"}
               onChange={handleInputChange}
               name={"cycleDuration"}
               value={pool.cycleDuration}
@@ -194,7 +196,7 @@ const CreatePool = ({ ybts, poolFactory, setSwitchingNetwork }) => {
           </div>
           <div>
             <Input
-              label={"Cycle Deposit And Bid Duration >= 1 min"}
+              label={"Cycle Deposit & Bid Duration >= 1 min"}
               onChange={handleInputChange}
               name={"cycleDepositAndBidDuration"}
               value={pool.cycleDepositAndBidDuration}
@@ -207,7 +209,7 @@ const CreatePool = ({ ybts, poolFactory, setSwitchingNetwork }) => {
           </div>
           <div>
             <Input
-              label={"Starting In >= 2 mins"}
+              label={"Starting In >= 1 mins"}
               onChange={handleInputChange}
               name={"startInterval"}
               value={pool.startInterval}

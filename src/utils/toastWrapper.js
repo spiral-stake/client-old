@@ -9,7 +9,7 @@ export const toastError = (message) => {
 export const toastSuccess = (message) => {
   return toast.success(message, {
     position: "top-left",
-    duration: "200",
+    duration: "400",
   });
 };
 

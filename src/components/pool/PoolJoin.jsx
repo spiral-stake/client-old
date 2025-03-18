@@ -3,9 +3,12 @@ import { useAccount } from "wagmi";
 import { handleAsync } from "../../utils/handleAsyncFunction";
 import Skeleton from "react-loading-skeleton";
 import { displayAmount } from "../../utils/displayAmounts";
+import PoolRouter from "../../contract-hooks/PoolRouter";
+import { toastSuccess } from "../../utils/toastWrapper";
 
 const PoolJoin = ({ pool, allPositions, getAllPositions, setActionBtn, setLoading }) => {
   const ybtCollateral = pool.ybt;
+  const [poolRouter, setPoolRouter] = useState();
   const [amountYbtCollateral, setAmountYbtCollateral] = useState();
   const [userYbtCollateralBalance, setUserYbtCollateralBalance] = useState();
   const [userYbtCollateralAllowance, setUserYbtCollateralAllowance] = useState();
@@ -13,13 +16,17 @@ const PoolJoin = ({ pool, allPositions, getAllPositions, setActionBtn, setLoadin
   const { address } = useAccount();
 
   useEffect(() => {
+    getPoolRouter();
     getAmountCollateral();
-    updateUserYbtCollateralBalance();
-    updateUserYbtCollateralAllowance();
   }, []);
 
+  const getPoolRouter = async () => {
+    const _poolRouter = await PoolRouter.createInstance(pool);
+    setPoolRouter(_poolRouter);
+  };
+
   useEffect(() => {
-    if (!address) return;
+    if (!address || !poolRouter) return;
 
     updateUserYbtCollateralBalance();
     updateUserYbtCollateralAllowance();
@@ -74,19 +81,20 @@ const PoolJoin = ({ pool, allPositions, getAllPositions, setActionBtn, setLoadin
   };
 
   const updateUserYbtCollateralAllowance = async () => {
-    const allowance = await ybtCollateral.allowance(address, pool.address);
+    const allowance = await ybtCollateral.allowance(address, poolRouter.address);
 
     setUserYbtCollateralAllowance(allowance);
   };
 
   const handleApproveAndJoin = async () => {
-    await ybtCollateral.approve(pool.address, amountYbtCollateral);
+    await ybtCollateral.approve(poolRouter.address, amountYbtCollateral);
     await Promise.all([updateUserYbtCollateralAllowance(), handleJoin()]);
   };
 
   const handleJoin = async () => {
-    await pool.depositYbtCollateral(address);
+    await poolRouter.depositYbtCollateral(address, amountYbtCollateral);
 
+    toastSuccess("Joined the pool successfully");
     await Promise.all([
       updateUserYbtCollateralBalance(),
       updateUserYbtCollateralAllowance(),

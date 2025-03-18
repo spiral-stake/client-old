@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 import { handleAsync } from "../../utils/handleAsyncFunction";
+import { toastSuccess } from "../../utils/toastWrapper";
 
 const PoolContribute = ({
   pool,
@@ -9,16 +10,12 @@ const PoolContribute = ({
   updatePosition,
   setActionBtn,
   setLoading,
+  isCycleDepositAndBidOpen,
 }) => {
   const [userBaseTokenBalance, setUserBaseTokenBalance] = useState();
   const [userBaseTokenAllowance, setUserBaseTokenAllowance] = useState();
-  const [isCycleDepositAndBidOpen, setIsCycleDepositAndBidOpen] = useState();
 
   const { address } = useAccount();
-
-  useEffect(() => {
-    setIsCycleDepositAndBidOpen(pool.calcIsCycleDepositAndBidWindowOpen(currentCycle));
-  }, [currentCycle]);
 
   useEffect(() => {
     if (!address) return;
@@ -76,7 +73,13 @@ const PoolContribute = ({
     };
 
     updatingActionBtn();
-  }, [userBaseTokenBalance, userBaseTokenAllowance, position, currentCycle]);
+  }, [
+    userBaseTokenBalance,
+    userBaseTokenAllowance,
+    position,
+    currentCycle,
+    isCycleDepositAndBidOpen,
+  ]);
 
   const updateUserBaseTokenBalance = async () => {
     const balance = await pool.baseToken.balanceOf(address);
@@ -97,6 +100,9 @@ const PoolContribute = ({
   const handleCycleDeposit = async () => {
     await pool.depositCycle(position.id);
 
+    toastSuccess(
+      `Cycle amount deposited successfully, ${pool.amountCycle} ${pool.baseToken.symbol} worth of ${pool.ybt.symbol} collateral released`
+    );
     await Promise.all([
       updateUserBaseTokenBalance(),
       updateUserBaseTokenAllowance(),

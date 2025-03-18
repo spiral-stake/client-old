@@ -3,18 +3,17 @@ import { useAccount } from "wagmi";
 import { handleAsync } from "../../utils/handleAsyncFunction";
 import ConnectWalletBtn from "../ConnectWalletBtn";
 import { displayAmount } from "../../utils/displayAmounts";
+import { toastSuccess } from "../../utils/toastWrapper";
 
 const PoolBid = ({ pool, poolChainId, currentCycle, position, setLoading }) => {
   const [amountBid, setAmountBid] = useState("");
   const [lowestBid, setLowestBid] = useState({});
   const [actionBtn, setActionBtn] = useState({ text: "", onClick: () => {}, disabled: false });
-  const [isCycleDepositAndBidOpen, setIsCycleDepositAndBidOpen] = useState();
 
   const { address, chainId } = useAccount();
 
   useEffect(() => {
     updateLowestBid();
-    setIsCycleDepositAndBidOpen(pool.calcIsCycleDepositAndBidWindowOpen(currentCycle));
   }, [currentCycle]);
 
   const updateLowestBid = async () => {
@@ -36,7 +35,7 @@ const PoolBid = ({ pool, poolChainId, currentCycle, position, setLoading }) => {
     const updatingActionBtn = () => {
       if (position.winningCycle) {
         return setActionBtn({
-          text: `Already Won`,
+          text: `Already Won, Cannot Bid`,
           disabled: true,
         });
       }
@@ -66,10 +65,12 @@ const PoolBid = ({ pool, poolChainId, currentCycle, position, setLoading }) => {
     };
 
     updatingActionBtn();
-  }, [position, currentCycle, isCycleDepositAndBidOpen, amountBid]);
+  }, [position, currentCycle, amountBid]);
 
   const handleCycleBid = async () => {
     await pool.bidCycle(position.id, amountBid);
+    toastSuccess(`Lowest bid is now yours at ${amountBid} ${pool.baseToken.symbol}`);
+
     setAmountBid("");
     updateLowestBid();
   };
@@ -90,7 +91,7 @@ const PoolBid = ({ pool, poolChainId, currentCycle, position, setLoading }) => {
         ) : (
           <>
             <span style={{ alignSelf: "flex-start" }}>
-              Current Lowest Bid: {displayAmount(lowestBid.amount)}
+              Current Lowest Bid: {displayAmount(lowestBid.amount)} {pool.baseToken.symbol}
             </span>
             <span style={{ alignSelf: "flex-start" }}>
               Eligible Bidders: {pool.totalCycles - (currentCycle - 1)}

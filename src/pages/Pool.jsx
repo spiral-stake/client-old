@@ -14,12 +14,19 @@ import { chainConfig } from "../config/chainConfig.js";
 import Loader from "../components/Loader.jsx";
 import Skeleton from "react-loading-skeleton";
 import PoolBid from "../components/pool/PoolBid.jsx";
+import { getCurrentTimestampInSeconds } from "../utils/time.js";
+import { toastSuccess } from "../utils/toastWrapper.js";
 
 const PoolPage = () => {
+  const [timestamp, setTimestamp] = useState();
+  const [timerId, setTimerId] = useState(null);
+
   const [pool, setPool] = useState();
   const [state, setState] = useState(undefined);
-  const [currentCycle, setCycle] = useState(0);
   const [cyclesFinalized, setCyclesFinalized] = useState(0);
+  const [currentCycle, setCurrentCycle] = useState(0);
+  const [currentCycleData, setCurrentCycleData] = useState({});
+  const [isCycleDepositAndBidOpen, setIsCycleDepositAndBidOpen] = useState();
 
   const [allPositions, setAllPositions] = useState();
   const [position, setPosition] = useState();
@@ -38,29 +45,73 @@ const PoolPage = () => {
   const poolChainId = parseInt(useSearchParams()[0].get("poolChainId"));
 
   useEffect(() => {
-    async function getPool() {
-      const _pool = await Pool.createInstance(poolAddress, poolChainId, ybtSymbol);
+    const _timerId = setInterval(() => {
+      setTimestamp(getCurrentTimestampInSeconds());
+    }, 1000);
 
-      setPool(_pool);
+    setTimerId(_timerId);
 
-      const [_allPositions, _cyclesFinalized] = await Promise.all([
-        _pool.getAllPositions(),
-        _pool.getCyclesFinalized(),
-      ]);
+    return () => {
+      clearInterval(timerId);
+    };
+  }, []);
 
-      setState(_pool.calcPoolState(_allPositions.length, _cyclesFinalized));
-      setCyclesFinalized(_cyclesFinalized);
-      setAllPositions(_allPositions);
-    }
-
+  useEffect(() => {
     getPool();
   }, []);
 
   useEffect(() => {
-    if (state !== "LIVE") return;
+    if (!pool) return;
 
-    setCycle(pool.calcCurrentCycle());
-  }, [state]);
+    getPoolState();
+  }, [pool]);
+
+  useEffect(() => {
+    if (!pool) return;
+
+    // UPDATES ON POOL START
+    if (timestamp === pool.startTime) {
+      getPoolState();
+    }
+
+    // UPDATES ON CYCLE CHANGE
+    if (timestamp === currentCycleData.endTime) {
+      setCurrentCycle(currentCycle + 1);
+    }
+
+    // UPDATES ON CYCLE DEPOSIT AND BID DURATION CLOSURE
+    if (timestamp === currentCycleData.depositAndBidEndTime) {
+      setIsCycleDepositAndBidOpen(false);
+      toastSuccess(`Deposit and Bid Window closed for cycle ${currentCycle}`);
+    }
+
+    if (timestamp === currentCycleData.depositAndBidEndTime + 10) {
+      getPoolState();
+    }
+  }, [timestamp]);
+
+  useEffect(() => {
+    if (state === "LIVE") {
+      // Only the first time
+      if (!currentCycle) {
+        return setCurrentCycle(pool.calcCurrentCycle());
+      }
+
+      const { startTime, endTime } = pool.calcCycleStartAndEndTime(currentCycle);
+      const depositAndBidEndTime = pool.calcDepositAndBidEndTime(currentCycle);
+
+      setCurrentCycleData({ startTime, endTime, depositAndBidEndTime });
+      setIsCycleDepositAndBidOpen(pool.calcIsCycleDepositAndBidOpen(currentCycle));
+      toastSuccess(`Cycle ${currentCycle} has started, Please make cycle Deposits and Bid`);
+    } else if (state === "DISCARDED") {
+      clearInterval(timerId);
+      toastSuccess("Pool Discarded, Please redeem your YBT Collateral");
+    } else if (state === "ENDED") {
+      clearInterval(timerId);
+      toastSuccess("Pool Ended, Claim Yield (if any)");
+      setActionBtn({ text: "Pool Ended", disabled: true });
+    }
+  }, [state, currentCycle]);
 
   useEffect(() => {
     if (!address) return;
@@ -74,6 +125,23 @@ const PoolPage = () => {
       setPosition(undefined);
     }
   }, [address, state]);
+
+  async function getPool() {
+    const _pool = await Pool.createInstance(poolAddress, poolChainId, ybtSymbol);
+
+    setPool(_pool);
+  }
+
+  const getPoolState = async () => {
+    const [_allPositions, _cyclesFinalized] = await Promise.all([
+      pool.getAllPositions(),
+      pool.getCyclesFinalized(),
+    ]);
+
+    setState(pool.calcPoolState(_allPositions.length, _cyclesFinalized));
+    setCyclesFinalized(_cyclesFinalized);
+    setAllPositions(_allPositions);
+  };
 
   const getAllPositions = async () => {
     const _allPositions = await pool.getAllPositions();
@@ -112,15 +180,15 @@ const PoolPage = () => {
           updatePosition={updatePosition}
           setActionBtn={setActionBtn}
           setLoading={setLoading}
+          isCycleDepositAndBidOpen={isCycleDepositAndBidOpen}
         />
       );
     }
 
-    if (state === "DISCARDED" || state === "ENDED") {
+    if (state === "DISCARDED") {
       return (
         <PoolRedeem
           pool={pool}
-          state={state}
           position={position}
           updatePosition={updatePosition}
           setActionBtn={setActionBtn}
@@ -200,7 +268,7 @@ const PoolPage = () => {
                 <ConnectWalletBtn className="btn btn--primary" />
               )}
             </div>
-            {pool.calcIsCycleDepositAndBidWindowOpen(currentCycle) && (
+            {isCycleDepositAndBidOpen && (
               <PoolBid
                 poolChainId={poolChainId}
                 pool={pool}

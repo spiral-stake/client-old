@@ -1,82 +1,56 @@
 import { useEffect, useState } from "react";
 import { displayAmount } from "../../utils/displayAmounts";
 import { handleAsync } from "../../utils/handleAsyncFunction";
+import { toastSuccess } from "../../utils/toastWrapper";
 
-const PoolRedeem = ({ pool, state, position, updatePosition, setActionBtn, setLoading }) => {
+const PoolRedeem = ({ pool, position, updatePosition, setActionBtn, setLoading }) => {
   const [amountCollateral, setAmountCollateral] = useState(null);
-  const [amountCollateralYield, setAmountCollateralYield] = useState(null);
 
   useEffect(() => {
     if (!position) {
       setActionBtn({
-        text: `Pool ${state}`,
+        text: `Pool Discarded`,
         disabled: true,
       });
       return;
     }
 
     const updatingActionBtn = async () => {
-      if (state === "DISCARDED") {
-        setAmountCollateral(position.amountCollateral);
+      setAmountCollateral(position.amountCollateral);
 
-        if (position.amountCollateral?.isGreaterThan(0)) {
-          setActionBtn({
-            text: `Redeem YBT Collateral`,
-            disabled: false,
-            onClick: handleAsync(handleRedeemCollateralIfDiscarded, setLoading),
-          });
-        } else {
-          setActionBtn({
-            text: `Redeemed YBT Collateral`,
-            disabled: true,
-          });
-        }
+      if (position.amountCollateral?.isGreaterThan(0)) {
+        setActionBtn({
+          text: `Redeem YBT Collateral`,
+          disabled: false,
+          onClick: handleAsync(handleRedeemCollateralIfDiscarded, setLoading),
+        });
       } else {
-        const _amountCollateralYield = await pool.getCollateralYield(position);
-        setAmountCollateralYield(_amountCollateralYield);
-
-        if (_amountCollateralYield?.isGreaterThan(0)) {
-          setActionBtn({
-            text: `Claim YBT Yield`,
-            disabled: false,
-            onClick: handleAsync(handleClaimYield, setLoading),
-          });
-        } else {
-          setActionBtn({
-            text: `Claimed YBT Yield`,
-            disabled: true,
-          });
-        }
+        setActionBtn({
+          text: `Redeemed YBT Collateral`,
+          disabled: true,
+        });
       }
     };
 
     updatingActionBtn();
-  }, [position, state, setActionBtn]);
-
-  const handleClaimYield = async () => {
-    await pool.claimCollateralYield(position.id);
-
-    await updatePosition(position.id);
-  };
+  }, [position, setActionBtn]);
 
   const handleRedeemCollateralIfDiscarded = async () => {
     await pool.redeemCollateralIfDiscarded(position.id);
+    toastSuccess("Redeemed Collateral successfully");
 
     await updatePosition(position.id);
   };
 
   return (
     position &&
-    ((state === "DISCARDED" && amountCollateral?.isGreaterThan(0)) ||
-      amountCollateralYield?.isGreaterThan(0)) && (
+    amountCollateral?.isGreaterThan(0) && (
       <div className="pool__interface-box">
         <span className="label">Redeem Collateral</span>
         <span className="input-box">
           <span className="input">
-            {state === "DISCARDED"
-              ? displayAmount(amountCollateral)
-              : displayAmount(amountCollateralYield)}{" "}
-            {pool.baseToken.symbol}
+            {displayAmount(amountCollateral)}
+            {pool.ybt.symbol}
           </span>
         </span>
       </div>

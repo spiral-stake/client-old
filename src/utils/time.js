@@ -59,6 +59,10 @@ export function parseTime(time, unit) {
   }
 }
 
+export function getCurrentTimestampInSeconds() {
+  return Math.floor(Date.now() / 1000);
+}
+
 export function formatTime(timeInSeconds) {
   const secondsInMinute = 60;
   const secondsInHour = secondsInMinute * 60;

@@ -174,13 +174,25 @@ export default class Pool extends Base {
     return currentCycle;
   }
 
-  calcIsCycleDepositAndBidWindowOpen(currentCycle) {
+  calcIsCycleDepositAndBidOpen(currentCycle) {
     const timestamp = this.currentTimestamp();
 
     const currentCycleStartTime = this.startTime + (currentCycle - 1) * this.cycleDuration;
     const currentCycleDepositAndBidEndTime =
-      currentCycleStartTime + this.cycleDepositAndBidDuration; // cycleDepositAndBidDuration can be calculated here only
+      currentCycleStartTime + this.cycleDepositAndBidDuration;
 
     return timestamp >= currentCycleStartTime && timestamp <= currentCycleDepositAndBidEndTime;
+  }
+
+  calcCycleStartAndEndTime(currentCycle) {
+    const currentCycleStartTime = this.startTime + (currentCycle - 1) * this.cycleDuration;
+    const currentCycleEndTime = currentCycleStartTime + this.cycleDuration;
+
+    return { startTime: currentCycleStartTime, endTime: currentCycleEndTime };
+  }
+
+  calcDepositAndBidEndTime(currentCycle) {
+    const currentCycleStartTime = this.startTime + (currentCycle - 1) * this.cycleDuration;
+    return currentCycleStartTime + this.cycleDepositAndBidDuration;
   }
 }

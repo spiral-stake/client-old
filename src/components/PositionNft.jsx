@@ -4,6 +4,7 @@ import truncateStr from "../utils/truncateStr";
 import { useEffect, useState } from "react";
 import { displayAmount } from "../utils/displayAmounts";
 import { useAccount } from "wagmi";
+import { toastSuccess } from "../utils/toastWrapper";
 
 const PositionNft = ({ pool, positionNft, updatePosition }) => {
   const [amountCollateralYield, setAmountCollateralYield] = useState();
@@ -27,11 +28,17 @@ const PositionNft = ({ pool, positionNft, updatePosition }) => {
 
   const handleClaimCollateralYield = async () => {
     await pool.claimCollateralYield(positionNft.id);
+    toastSuccess(`Claimed ${amountCollateralYield} ${pool.ybt.symbol}`);
     updatePosition(positionNft.id);
   };
 
   const handleClaimSpiralYield = async () => {
     await pool.claimSpiralYield(positionNft.id);
+    toastSuccess(
+      `Claimed ${
+        spiralYield.amountBase > 0 ? `${spiralYield.amountBase} ${pool.baseToken.symbol}` : ""
+      }   ${spiralYield.amountYbt > 0 ? `& ${spiralYield.amountYbt} ${pool.ybt.symbol}` : ""}`
+    );
     updatePosition(positionNft.id);
   };
 
