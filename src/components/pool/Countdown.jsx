@@ -27,11 +27,11 @@ const Countdown = ({
     }
 
     if (currentCycleData) {
-      if (currentCycleData?.depositAndBidEndTime === timestamp) {
+      if (isCycleDepositAndBidOpen && currentCycleData.depositAndBidEndTime === timestamp) {
         closeCycleDepositWindow();
       }
 
-      if (currentCycleData?.endTime === timestamp) {
+      if (currentCycleData.endTime === timestamp) {
         updateCurrentCycle();
       }
     }
