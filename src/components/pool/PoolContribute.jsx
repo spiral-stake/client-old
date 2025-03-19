@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 import { handleAsync } from "../../utils/handleAsyncFunction";
 import { toastSuccess } from "../../utils/toastWrapper";
+import { NATIVE_ADDRESS } from "../../utils/NATIVE";
+import { Base } from "../../contract-hooks/Base";
 
 const PoolContribute = ({
   pool,
@@ -54,22 +56,30 @@ const PoolContribute = ({
         });
       }
 
-      if (userBaseTokenAllowance?.isLessThan(pool.amountCycle)) {
+      if (pool.baseToken.address !== NATIVE_ADDRESS) {
+        if (userBaseTokenAllowance?.isLessThan(pool.amountCycle)) {
+          return setActionBtn({
+            text: `Approve and Deposit`,
+            disabled: false,
+            onClick: handleAsync(
+              () => handleApproveAndCycleDeposit(pool.baseToken, pool.address, pool.amountCycle),
+              setLoading
+            ),
+          });
+        }
+
         return setActionBtn({
-          text: `Approve and Deposit`,
+          text: `Deposit Cycle Amount`,
           disabled: false,
-          onClick: handleAsync(
-            () => handleApproveAndCycleDeposit(pool.baseToken, pool.address, pool.amountCycle),
-            setLoading
-          ),
+          onClick: handleAsync(handleCycleDeposit, setLoading),
+        });
+      } else {
+        return setActionBtn({
+          text: `Deposit Cycle Amount`,
+          disabled: false,
+          onClick: handleAsync(handleCycleDeposit, setLoading),
         });
       }
-
-      return setActionBtn({
-        text: `Deposit Cycle Amount`,
-        disabled: false,
-        onClick: handleAsync(handleCycleDeposit, setLoading),
-      });
     };
 
     updatingActionBtn();
@@ -82,13 +92,22 @@ const PoolContribute = ({
   ]);
 
   const updateUserBaseTokenBalance = async () => {
-    const balance = await pool.baseToken.balanceOf(address);
+    let balance;
+
+    if (pool.baseToken.address !== NATIVE_ADDRESS) {
+      balance = await pool.baseToken.balanceOf(address);
+    } else {
+      balance = await new Base().getNativeBalance(address);
+    }
+
     setUserBaseTokenBalance(balance);
   };
 
   const updateUserBaseTokenAllowance = async () => {
-    const allowance = await pool.baseToken.allowance(address, pool.address);
-    setUserBaseTokenAllowance(allowance);
+    if (pool.baseToken.address !== NATIVE_ADDRESS) {
+      const allowance = await pool.baseToken.allowance(address, pool.address);
+      setUserBaseTokenAllowance(allowance);
+    }
   };
 
   const handleApproveAndCycleDeposit = async (token, to, value) => {

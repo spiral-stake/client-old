@@ -6,7 +6,7 @@ import { displayAmount } from "../../utils/displayAmounts";
 import PoolRouter from "../../contract-hooks/PoolRouter";
 import { toastSuccess } from "../../utils/toastWrapper";
 
-const PoolJoin = ({ pool, allPositions, getAllPositions, setActionBtn, setLoading }) => {
+const PoolJoin = ({ pool, allPositions, position, getAllPositions, setActionBtn, setLoading }) => {
   const ybtCollateral = pool.ybt;
   const [poolRouter, setPoolRouter] = useState();
   const [amountYbtCollateral, setAmountYbtCollateral] = useState();
@@ -30,12 +30,19 @@ const PoolJoin = ({ pool, allPositions, getAllPositions, setActionBtn, setLoadin
 
     updateUserYbtCollateralBalance();
     updateUserYbtCollateralAllowance();
-  }, [address]);
+  }, [address, poolRouter]);
 
   useEffect(() => {
     if (!amountYbtCollateral) return;
 
     const updatingActionBtn = () => {
+      if (position) {
+        return setActionBtn({
+          text: "Joined",
+          disabled: true,
+        });
+      }
+
       if (allPositions.length == pool.totalPositions) {
         return setActionBtn({
           text: "Pool is Filled",
@@ -66,7 +73,13 @@ const PoolJoin = ({ pool, allPositions, getAllPositions, setActionBtn, setLoadin
     };
 
     updatingActionBtn();
-  }, [userYbtCollateralBalance, userYbtCollateralAllowance, allPositions, amountYbtCollateral]);
+  }, [
+    userYbtCollateralBalance,
+    userYbtCollateralAllowance,
+    allPositions,
+    amountYbtCollateral,
+    position,
+  ]);
 
   const getAmountCollateral = async () => {
     setAmountYbtCollateral(undefined);

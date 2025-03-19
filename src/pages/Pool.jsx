@@ -14,47 +14,33 @@ import { chainConfig } from "../config/chainConfig.js";
 import Loader from "../components/Loader.jsx";
 import Skeleton from "react-loading-skeleton";
 import PoolBid from "../components/pool/PoolBid.jsx";
-import { getCurrentTimestampInSeconds } from "../utils/time.js";
+import { getCurrentTimestampInSeconds, wait } from "../utils/time.js";
 import { toastSuccess } from "../utils/toastWrapper.js";
+import Countdown from "../components/pool/Countdown.jsx";
 
 const PoolPage = () => {
-  const [timestamp, setTimestamp] = useState();
-  const [timerId, setTimerId] = useState(null);
-
   const [pool, setPool] = useState();
   const [state, setState] = useState(undefined);
   const [cyclesFinalized, setCyclesFinalized] = useState(0);
   const [currentCycle, setCurrentCycle] = useState(0);
-  const [currentCycleData, setCurrentCycleData] = useState({});
+  const [currentCycleData, setCurrentCycleData] = useState();
   const [isCycleDepositAndBidOpen, setIsCycleDepositAndBidOpen] = useState();
 
-  const [allPositions, setAllPositions] = useState();
+  const [allPositions, setAllPositions] = useState([]);
   const [position, setPosition] = useState();
 
+  const [loading, setLoading] = useState(false);
   const [actionBtn, setActionBtn] = useState({
-    text: "Loading ...",
+    text: "Loading...",
     onClick: () => {},
     disabled: false,
   });
-  const [loading, setLoading] = useState(false);
 
   const { address, chainId } = useAccount();
   const { switchChain } = useSwitchChain();
   const { address: poolAddress } = useParams();
   const ybtSymbol = useSearchParams()[0].get("ybt");
   const poolChainId = parseInt(useSearchParams()[0].get("poolChainId"));
-
-  useEffect(() => {
-    const _timerId = setInterval(() => {
-      setTimestamp(getCurrentTimestampInSeconds());
-    }, 1000);
-
-    setTimerId(_timerId);
-
-    return () => {
-      clearInterval(timerId);
-    };
-  }, []);
 
   useEffect(() => {
     getPool();
@@ -67,103 +53,109 @@ const PoolPage = () => {
   }, [pool]);
 
   useEffect(() => {
-    if (!pool) return;
-
-    // UPDATES ON POOL START
-    if (timestamp === pool.startTime) {
-      getPoolState();
+    // Only for the 1st cycle
+    if (state === "LIVE" && !currentCycle) {
+      return setCurrentCycle(pool.calcCurrentCycle());
     }
 
-    // UPDATES ON CYCLE CHANGE
-    if (timestamp === currentCycleData.endTime) {
-      setCurrentCycle(currentCycle + 1);
-    }
-
-    // UPDATES ON CYCLE DEPOSIT AND BID DURATION CLOSURE
-    if (timestamp === currentCycleData.depositAndBidEndTime) {
-      setIsCycleDepositAndBidOpen(false);
-      toastSuccess(`Deposit and Bid Window closed for cycle ${currentCycle}`);
-    }
-
-    if (timestamp === currentCycleData.depositAndBidEndTime + 10) {
-      getPoolState();
-    }
-  }, [timestamp]);
-
-  useEffect(() => {
-    if (state === "LIVE") {
-      // Only the first time
-      if (!currentCycle) {
-        return setCurrentCycle(pool.calcCurrentCycle());
-      }
-
-      const { startTime, endTime } = pool.calcCycleStartAndEndTime(currentCycle);
-      const depositAndBidEndTime = pool.calcDepositAndBidEndTime(currentCycle);
-
-      setCurrentCycleData({ startTime, endTime, depositAndBidEndTime });
-      setIsCycleDepositAndBidOpen(pool.calcIsCycleDepositAndBidOpen(currentCycle));
-      toastSuccess(`Cycle ${currentCycle} has started, Please make cycle Deposits and Bid`);
-    } else if (state === "DISCARDED") {
-      clearInterval(timerId);
+    if (state === "DISCARDED") {
       toastSuccess("Pool Discarded, Please redeem your YBT Collateral");
-    } else if (state === "ENDED") {
-      clearInterval(timerId);
+    }
+
+    if (state === "ENDED") {
       toastSuccess("Pool Ended, Claim Yield (if any)");
-      setActionBtn({ text: "Pool Ended", disabled: true });
+      return setActionBtn({ text: "Pool Ended", disabled: true });
     }
   }, [state, currentCycle]);
 
   useEffect(() => {
-    if (!address) return;
-    if (!state || state == "WAITING") return;
+    if (!currentCycle) return;
 
-    const userPositions = allPositions.filter((position) => position.owner === address);
+    const { startTime, endTime } = pool.calcCycleStartAndEndTime(currentCycle);
+    const depositAndBidEndTime = pool.calcDepositAndBidEndTime(currentCycle);
+    setCurrentCycleData({ startTime, endTime, depositAndBidEndTime });
 
-    if (userPositions.length) {
-      setPosition(userPositions[0]);
-    } else {
-      setPosition(undefined);
+    setIsCycleDepositAndBidOpen(getCurrentTimestampInSeconds() < depositAndBidEndTime);
+    toastSuccess(`Cycle ${currentCycle} has started, Please make cycle Deposits and Bid`);
+  }, [currentCycle]);
+
+  useEffect(() => {
+    if (address && state && allPositions) {
+      const userPositions = allPositions.filter((position) => position.owner === address);
+
+      if (userPositions.length) {
+        setPosition(userPositions[0]);
+      } else {
+        setPosition(undefined);
+      }
     }
-  }, [address, state]);
+  }, [address, state, allPositions]);
 
   async function getPool() {
     const _pool = await Pool.createInstance(poolAddress, poolChainId, ybtSymbol);
-
     setPool(_pool);
   }
 
   const getPoolState = async () => {
-    const [_allPositions, _cyclesFinalized] = await Promise.all([
-      pool.getAllPositions(),
-      pool.getCyclesFinalized(),
-    ]);
+    try {
+      const [_allPositions, _cyclesFinalized] = await Promise.all([
+        pool.getAllPositions(),
+        pool.getCyclesFinalized(),
+      ]);
 
-    setState(pool.calcPoolState(_allPositions.length, _cyclesFinalized));
-    setCyclesFinalized(_cyclesFinalized);
-    setAllPositions(_allPositions);
+      setState(pool.calcPoolState(_allPositions.length, _cyclesFinalized));
+      setCyclesFinalized(_cyclesFinalized);
+      setAllPositions(_allPositions);
+    } catch (error) {
+      console.error("Failed to get pool state:", error);
+    }
   };
 
   const getAllPositions = async () => {
-    const _allPositions = await pool.getAllPositions();
-    setAllPositions(_allPositions);
+    try {
+      const _allPositions = await pool.getAllPositions();
+      setAllPositions(_allPositions);
+    } catch (error) {
+      console.error("Failed to get All Positions:", error);
+    }
   };
 
   const updatePosition = async (positionId) => {
-    const updatedPosition = await pool.getPosition(positionId);
+    if (!allPositions) return;
 
-    setPosition(updatedPosition);
+    try {
+      const updatedPosition = await pool.getPosition(positionId);
+      setPosition(updatedPosition);
 
-    const updatedPositions = [...allPositions];
-    updatedPositions[positionId] = updatedPosition;
-    setAllPositions(updatedPositions);
+      const updatedPositions = [...allPositions];
+      updatedPositions[positionId] = updatedPosition;
+      setAllPositions(updatedPositions);
+    } catch (error) {
+      console.error("Failed to update Position", error);
+    }
+  };
+
+  const closeCycleDepositWindow = async () => {
+    setIsCycleDepositAndBidOpen(false);
+    toastSuccess(`Deposit and Bid Window closed for cycle ${currentCycle}`);
+
+    await wait(10);
+    getPoolState();
+  };
+
+  const updateCurrentCycle = () => {
+    setCurrentCycle((prevCycle) => Math.min(prevCycle + 1, pool.totalCycles));
   };
 
   const renderPoolInterface = () => {
+    if (!pool) return null;
+
     if (state === "WAITING") {
       return (
         <PoolJoin
           pool={pool}
           allPositions={allPositions}
+          position={position}
           getAllPositions={getAllPositions}
           setActionBtn={setActionBtn}
           setLoading={setLoading}
@@ -196,6 +188,8 @@ const PoolPage = () => {
         />
       );
     }
+
+    return null;
   };
 
   return pool ? (
@@ -219,30 +213,41 @@ const PoolPage = () => {
             }}
           >
             <div className="tag">
-              <>
-                {state ? (
+              {state ? (
+                <>
                   <span>{state}</span>
-                ) : (
-                  <Skeleton width={100} baseColor="var(--color-secondary)" />
-                )}
-                {state === "LIVE" && (
-                  <span>
-                    Cycle - {currentCycle}/{pool.totalCycles}{" "}
-                  </span>
-                )}
-                {state === "ENDED" && (
-                  <span>
-                    Cycle's Finalized - {cyclesFinalized}/{pool.totalCycles}{" "}
-                  </span>
-                )}
-                {(state === "WAITING" || state === "DISCARDED") && (
-                  <span>
-                    Filled - {allPositions.length}/{pool.totalPositions}{" "}
-                  </span>
-                )}
-                {state === undefined && <Skeleton width={100} baseColor="var(--color-secondary)" />}
-              </>
+                  {state === "LIVE" && (
+                    <span>
+                      Cycle - {currentCycle}/{pool.totalCycles}
+                    </span>
+                  )}
+                  {state === "ENDED" && (
+                    <span>
+                      Cycle's Finalized - {cyclesFinalized}/{pool.totalCycles}
+                    </span>
+                  )}
+                  {["WAITING", "DISCARDED"].includes(state) && (
+                    <span>
+                      Filled - {allPositions.length}/{pool.totalPositions}
+                    </span>
+                  )}
+                </>
+              ) : (
+                <Skeleton width={100} baseColor="var(--color-secondary)" />
+              )}
             </div>
+
+            {(state === "WAITING" || state === "LIVE") && (
+              <Countdown
+                updateCurrentCycle={updateCurrentCycle}
+                pool={pool}
+                state={state}
+                currentCycleData={currentCycleData}
+                isCycleDepositAndBidOpen={isCycleDepositAndBidOpen}
+                getPoolState={getPoolState}
+                closeCycleDepositWindow={closeCycleDepositWindow}
+              />
+            )}
             <div className="pool__interface">
               {/* {position && `Your Position Id: ${position.id}`} */}
               {renderPoolInterface()}
@@ -277,7 +282,7 @@ const PoolPage = () => {
                 setLoading={setLoading}
               />
             )}
-            <PoolInfo pool={pool} />
+            <PoolInfo pool={pool} state={state} currentCycleData={currentCycleData} />
           </div>
         </div>
       </div>

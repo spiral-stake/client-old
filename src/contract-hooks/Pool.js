@@ -3,6 +3,7 @@ import { abi as POOL_ABI } from "../abi/SpiralPool.sol/SpiralPool.json";
 import { formatUnits, parseUnits } from "../utils/formatUnits";
 import { readYbt } from "../config/contractsData";
 import ERC20 from "./ERC20";
+import { NATIVE_ADDRESS } from "../utils/NATIVE";
 
 export default class Pool extends Base {
   constructor(address) {
@@ -17,12 +18,21 @@ export default class Pool extends Base {
       const ybt = await readYbt(chainId, ybtSymbol);
       const { baseToken, syToken } = ybt;
 
-      instance.baseToken = new ERC20(
-        baseToken.address,
-        baseToken.name,
-        baseToken.symbol,
-        baseToken.decimals
-      );
+      if (baseToken.address !== NATIVE_ADDRESS) {
+        instance.baseToken = new ERC20(
+          baseToken.address,
+          baseToken.name,
+          baseToken.symbol,
+          baseToken.decimals
+        );
+      } else {
+        instance.baseToken = {
+          address: baseToken.address,
+          name: baseToken.name,
+          symbol: baseToken.symbol,
+          decimals: baseToken.decimals,
+        };
+      }
       instance.ybt = new ERC20(ybt.address, ybt.name, ybt.symbol, ybt.decimals);
       instance.syToken = new ERC20(syToken.address, syToken.name, syToken.symbol, syToken.decimals);
     }
@@ -62,8 +72,16 @@ export default class Pool extends Base {
     return this.write("depositYbtCollateral", [receiver]);
   }
 
-  async depositCycle(positionId) {
-    return this.write("depositCycle", [positionId]);
+  async depositCycle(positionId, value) {
+    if (this.baseToken.address !== NATIVE_ADDRESS) {
+      return this.write("depositCycle", [positionId]);
+    } else {
+      return this.write(
+        "depositCycle",
+        [positionId],
+        parseUnits(this.amountCycle, this.baseToken.decimals)
+      );
+    }
   }
 
   async bidCycle(positionId, bidAmount) {
@@ -99,6 +117,16 @@ export default class Pool extends Base {
     const positionsData = await this.read("getAllPositions", [], this.chainId);
     const positions = await Promise.all(positionsData.map((_, index) => this.getPosition(index)));
     return positions;
+  }
+
+  async getPoolState() {
+    const poolState = await this.read("getPoolState", [], this.chainId);
+    return ["WAITING", "LIVE", "ENDED", "DISCARDED"][poolState];
+  }
+
+  async getCycleState(cycle) {
+    const cycleState = await this.read("getCycleState", [cycle], this.chainId);
+    return ["NotStarted", "DepositAndBid", "Unfinalized", "Finalized"][cycleState];
   }
 
   async getPosition(positionId) {
@@ -167,21 +195,7 @@ export default class Pool extends Base {
     const timestamp = this.currentTimestamp();
     let currentCycle = Math.floor((timestamp - this.startTime) / this.cycleDuration) + 1;
 
-    if (currentCycle > this.totalCycles) {
-      currentCycle = this.totalCycles;
-    }
-
-    return currentCycle;
-  }
-
-  calcIsCycleDepositAndBidOpen(currentCycle) {
-    const timestamp = this.currentTimestamp();
-
-    const currentCycleStartTime = this.startTime + (currentCycle - 1) * this.cycleDuration;
-    const currentCycleDepositAndBidEndTime =
-      currentCycleStartTime + this.cycleDepositAndBidDuration;
-
-    return timestamp >= currentCycleStartTime && timestamp <= currentCycleDepositAndBidEndTime;
+    return Math.min(currentCycle, this.totalCycles);
   }
 
   calcCycleStartAndEndTime(currentCycle) {

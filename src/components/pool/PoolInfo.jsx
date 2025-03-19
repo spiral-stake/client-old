@@ -1,7 +1,7 @@
 import { displayAmount } from "../../utils/displayAmounts";
 import { formatTime, getLocalTimeFromTimestamp } from "../../utils/time";
 
-const PoolInfo = ({ pool }) => {
+const PoolInfo = ({ pool, state, currentCycleData }) => {
   return (
     <div className="pool__info">
       <ul>
@@ -44,7 +44,7 @@ const PoolInfo = ({ pool }) => {
           <small>Cycle Duration</small>
           <h3>
             {pool ? formatTime(pool.cycleDuration).value : <Skeleton />}{" "}
-            <small className="mx-1">{formatTime(pool.cycleDuration).unit}</small>
+            <small className="mx-1">{pool ? formatTime(pool.cycleDuration).unit : ""}</small>
           </h3>
         </li>
 
@@ -52,19 +52,37 @@ const PoolInfo = ({ pool }) => {
           <small>Deposit & Bid Window</small>
           <h3>
             {pool ? formatTime(pool.cycleDepositAndBidDuration).value : <Skeleton />}{" "}
-            <small className="mx-1">{formatTime(pool.cycleDepositAndBidDuration).unit} </small>{" "}
-          </h3>
-        </li>
-
-        <li>
-          <small>Start Time</small>
-          <h3>
-            {pool ? getLocalTimeFromTimestamp(pool.startTime).formattedDate : <Skeleton />}{" "}
             <small className="mx-1">
-              {getLocalTimeFromTimestamp(pool.startTime).formattedTime}{" "}
+              {pool ? formatTime(pool.cycleDepositAndBidDuration).unit : ""}
             </small>
           </h3>
         </li>
+
+        {!currentCycleData ? (
+          <li>
+            <small>{state === "WAITING" ? "Starting at" : "Discarded at"}</small>
+            <h3>
+              {pool ? getLocalTimeFromTimestamp(pool.startTime).formattedDate : <Skeleton />}{" "}
+              <small className="mx-1">
+                {pool ? getLocalTimeFromTimestamp(pool.startTime).formattedTime : ""}
+              </small>
+            </h3>
+          </li>
+        ) : (
+          <li>
+            <small>{state === "LIVE" ? "Cycle Ends at" : "Ended at"}</small>
+            <h3>
+              {pool ? (
+                getLocalTimeFromTimestamp(currentCycleData?.endTime).formattedDate
+              ) : (
+                <Skeleton />
+              )}{" "}
+              <small className="mx-1">
+                {pool ? getLocalTimeFromTimestamp(currentCycleData?.endTime).formattedTime : ""}
+              </small>
+            </h3>
+          </li>
+        )}
       </ul>
     </div>
   );

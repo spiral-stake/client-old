@@ -1,3 +1,5 @@
+const nativeAddress = "0x0000000000000000000000000000000000000000";
+
 export const getTokens = async (chainId) => {
   const ybts = [];
   const baseTokens = [];
@@ -12,8 +14,10 @@ export const getTokens = async (chainId) => {
     ybts.push(ybt);
 
     if (!baseTokensObj[baseToken.address]) {
-      baseTokens.push(baseToken);
-      baseTokensObj[baseToken.address] = true;
+      if (baseToken.address !== nativeAddress) {
+        baseTokens.push(baseToken);
+        baseTokensObj[baseToken.address] = true;
+      }
     }
   });
 

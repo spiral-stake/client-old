@@ -40,10 +40,6 @@ const PoolBid = ({ pool, poolChainId, currentCycle, position, setLoading }) => {
         });
       }
 
-      const maxBidAmount = lowestBid.amount?.gt(0)
-        ? lowestBid.amount
-        : pool.amountCollateralInBase.plus(1);
-
       if (!amountBid || parseInt(amountBid) === 0) {
         return setActionBtn({
           text: `Bid Lowest Liqudity`,
@@ -51,12 +47,14 @@ const PoolBid = ({ pool, poolChainId, currentCycle, position, setLoading }) => {
         });
       }
 
-      if (amountBid >= maxBidAmount) {
-        return setActionBtn({
-          text: `Bid Amount too High`,
-          disabled: true,
-        });
+      const isBidTooHigh = lowestBid.amount?.isZero()
+        ? amountBid > parseFloat(pool.amountCollateralInBase)
+        : amountBid >= parseFloat(lowestBid.amount);
+
+      if (isBidTooHigh) {
+        return setActionBtn({ text: "Bid Amount too High", disabled: true });
       }
+
       return setActionBtn({
         text: `Bid Lowest Liqudity`,
         disabled: false,

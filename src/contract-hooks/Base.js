@@ -5,8 +5,10 @@ import {
   simulateContract,
   getAccount,
   waitForTransactionReceipt,
+  getBalance,
 } from "wagmi/actions";
 import { wagmiConfig as config } from "../config/wagmiConfig";
+import { formatUnits } from "../utils/formatUnits";
 const { connector } = getAccount(config);
 
 export class Base {
@@ -50,6 +52,7 @@ export class Base {
       functionName,
       args,
       value,
+      // __mode: "prepared", // Needs to be uncommented on local
     });
 
     // await this.wait(4);
@@ -64,5 +67,13 @@ export class Base {
         resolve();
       }, seconds * 1000);
     });
+  }
+
+  async getNativeBalance(account) {
+    const { value } = await getBalance(config, {
+      address: account,
+    });
+
+    return formatUnits(value, this.decimals);
   }
 }

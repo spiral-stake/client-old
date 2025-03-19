@@ -5,8 +5,8 @@ const fraxtalLocal = defineChain({
   name: "Frax Local",
   nativeCurrency: {
     decimals: 18,
-    name: "Ether",
-    symbol: "ETH",
+    name: "Frax Ether",
+    symbol: "frxETH",
   },
   rpcUrls: {
     default: {
@@ -17,7 +17,7 @@ const fraxtalLocal = defineChain({
   logo: "/logo/reya-logo.webp",
   api: "http://localhost:5000",
   onboard: {
-    amountNative: "1",
+    amountNative: "100",
   },
 });
 

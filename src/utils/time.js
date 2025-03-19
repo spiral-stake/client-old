@@ -95,3 +95,39 @@ export function formatTime(timeInSeconds) {
 
   return { value: timeValue, unit: timeValue > 1 ? timeUnit + "s" : timeUnit };
 }
+
+/**
+ * Converts seconds into a formatted string showing days, hours, minutes, and seconds
+ * in the standard format of DD:HH:MM:SS
+ * @param {number} totalSeconds - Total number of seconds to convert
+ * @returns {string} - Formatted time string (e.g., "01:05:30:45")
+ */
+export function countdown(totalSeconds) {
+  // Handle invalid input
+  if (typeof totalSeconds !== "number" || isNaN(totalSeconds) || totalSeconds < 0) {
+    return "Invalid input";
+  }
+
+  // Calculate days, hours, minutes, and seconds
+  const days = Math.floor(totalSeconds / (60 * 60 * 24));
+  const hours = Math.floor((totalSeconds % (60 * 60 * 24)) / (60 * 60));
+  const minutes = Math.floor((totalSeconds % (60 * 60)) / 60);
+  const seconds = Math.floor(totalSeconds % 60);
+
+  // Format each component to have two digits
+  const formattedDays = days.toString().padStart(2, "0");
+  const formattedHours = hours.toString().padStart(2, "0");
+  const formattedMinutes = minutes.toString().padStart(2, "0");
+  const formattedSeconds = seconds.toString().padStart(2, "0");
+
+  // Combine into standard format
+  return `${formattedDays}:${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
+}
+
+export function wait(seconds) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, seconds * 1000);
+  });
+}
