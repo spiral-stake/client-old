@@ -118,7 +118,7 @@ const reyaTestnet = defineChain({
 });
 
 export const chainConfig = {
-  31337: fraxtalLocal,
+  // 31337: fraxtalLocal,
   // 31338: arbitrumLocal,
   2522: fraxtalTestnet,
   421614: arbitrumTestnet,
