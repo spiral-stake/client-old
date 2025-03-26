@@ -12,10 +12,13 @@ import { chainConfig } from "../config/chainConfig";
 import "../styles/createPool.css";
 import { parseTime } from "../utils/time";
 import { toastSuccess } from "../utils/toastWrapper";
+import SY from "../contract-hooks/SY";
+import { formatUnits } from "../utils/formatUnits";
 
 const CreatePool = ({ ybts, poolFactory, setSwitchingNetwork }) => {
   const [pool, setPool] = useState({
     ybt: undefined,
+    ybtExchangeRate: "",
     amountCycle: "",
     cycleDuration: "", // In minutes (Needs rework)
     cycleDurationUnit: "minutes",
@@ -98,7 +101,6 @@ const CreatePool = ({ ybts, poolFactory, setSwitchingNetwork }) => {
             totalCycles,
             cycleDuration,
             cycleDepositAndBidDuration,
-
             startInterval
           ),
         setLoading
@@ -107,8 +109,9 @@ const CreatePool = ({ ybts, poolFactory, setSwitchingNetwork }) => {
   }, [pool]);
 
   const handleYbtChange = async (e) => {
-    const newYbt = await readYbt(chainId || appChainId, e.target.value);
-    setPool({ ...pool, ybt: newYbt });
+    const _ybt = await readYbt(chainId || appChainId, e.target.value);
+    const ybtExchangeRate = await new SY(_ybt.syToken.address).getYbtExchangeRate(_ybt);
+    setPool({ ...pool, ybt: _ybt });
   };
 
   const handleInputChange = (e) => {
